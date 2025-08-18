@@ -1,0 +1,542 @@
+/**
+ * Vue Flow 編輯器專用樣式
+ * 台灣在地化拖拉式工作流編輯器樣式
+ */
+
+// ===== Vue Flow 基礎樣式覆蓋 (n8n 風格) =====
+
+.vue-flow {
+  background: $bg-color;
+  font-family: $font-family-base;
+
+  // 背景樣式
+  .vue-flow__background {
+    background-color: $bg-color;
+  }
+
+  // 控制項樣式
+  .vue-flow__controls {
+    background: $primary-75;
+    border: $border-width-thin solid $primary-300;
+    border-radius: $border-radius-xl;
+    box-shadow: $shadow-lg;
+    padding: $spacing-xs;
+    backdrop-filter: blur(12px);
+
+    .vue-flow__controls-button {
+      background: transparent;
+      border: none;
+      border-radius: $border-radius-lg;
+      padding: $spacing-xs;
+      margin: 2px;
+      color: $neutral-500;
+      cursor: pointer;
+      transition: all $transition-fast ease;
+
+      &:hover {
+        background: rgba($primary-500, 0.1);
+        color: $primary-600;
+      }
+
+      &:active {
+        background: rgba($primary-500, 0.2);
+      }
+
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+
+  // 小地圖樣式
+  .vue-flow__minimap {
+    background: $primary-200;
+    border: $border-width-thin solid $primary-300;
+    border-radius: $border-radius-lg;
+    box-shadow: $shadow-lg;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+
+    .vue-flow__minimap-mask {
+      fill: $primary-200;
+      stroke: $primary-500;
+      stroke-width: 3;
+    }
+  }
+
+  // 選擇框樣式
+  .vue-flow__selection {
+    background: rgba($primary-300, 0.2);
+    border: 2px dashed $primary-500;
+  }
+
+  // 連線樣式 (使用專案色卡)
+  .vue-flow__edge {
+    .vue-flow__edge-path {
+      stroke: $neutral-400;
+      stroke-width: 2;
+      fill: none;
+      transition: all $transition-fast ease;
+    }
+
+    &:hover .vue-flow__edge-path {
+      stroke: $primary-500;
+      stroke-width: 3;
+    }
+
+    &.selected .vue-flow__edge-path {
+      stroke: $primary-600;
+      stroke-width: 3;
+    }
+
+    .vue-flow__edge-text {
+      font-size: $font-size-sm;
+      fill: $text-color-secondary;
+      background: $bg-color-secondary;
+      padding: $spacing-xs;
+      border-radius: $border-radius-sm;
+    }
+  }
+
+  // 連接點樣式 (使用專案色卡)
+  .vue-flow__handle {
+    width: 12px;
+    height: 12px;
+    background: $bg-color;
+    border: 2px solid $neutral-400;
+    border-radius: 50%;
+    transition: all $transition-fast ease;
+
+    &:hover {
+      border-color: $primary-500;
+      background: $primary-500;
+      transform: scale(1.2);
+    }
+
+    &.vue-flow__handle-connecting {
+      border-color: $primary-600;
+      background: $primary-600;
+    }
+
+    &.vue-flow__handle-valid {
+      border-color: $success-color;
+      background: $success-color;
+    }
+  }
+}
+
+// ===== n8n 風格節點基礎樣式 =====
+
+.taiwan-node {
+  min-width: 200px;
+  max-width: 300px;
+  background: $white;
+  border: $border-width-base solid $neutral-300;
+  border-radius: $border-radius-lg;
+  box-shadow: $shadow-base;
+  transition: all $transition-fast ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+
+  // 專案風格頂部裝飾條
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: $primary-500;
+  }
+
+  // 懸停效果 (使用專案色卡)
+  &:hover {
+    border-color: $primary-500;
+    box-shadow: 0 4px 12px rgba($primary-500, 0.15);
+    transform: translateY(-1px);
+  }
+
+  // 選中狀態 (使用專案色卡)
+  &.selected {
+    border-color: $primary-500;
+    box-shadow: 0 0 0 2px rgba($primary-500, 0.3);
+  }
+
+  // 錯誤狀態
+  &.has-error {
+    border-color: $error-color;
+    box-shadow: 0 0 0 2px rgba($error-color, 0.3);
+
+    &::before {
+      background: $error-color;
+    }
+  }
+
+  // 執行中狀態
+  &.executing {
+    border-color: $success-color;
+    box-shadow: 0 0 0 2px rgba($success-color, 0.3);
+
+    &::before {
+      background: linear-gradient(90deg, $success-color 0%, lighten($success-color, 20%) 50%, $success-color 100%);
+      animation: pulse 2s ease-in-out infinite;
+    }
+  }
+
+  // 停用狀態
+  &.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+
+    &:hover {
+      transform: none;
+      box-shadow: $shadow-base;
+    }
+  }
+}
+
+// ===== 節點內部結構樣式 =====
+
+.node-header {
+  display: flex;
+  align-items: center;
+  padding: $spacing-base $spacing-lg;
+  background: $bg-color-secondary;
+  border-bottom: $border-width-thin solid $border-color;
+  
+  .node-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: $spacing-base;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    
+    .el-icon {
+      font-size: 18px;
+    }
+  }
+  
+  .node-title {
+    flex: 1;
+    
+    .node-name {
+      font-weight: $font-weight-semibold;
+      font-size: $font-size-base;
+      color: $text-color;
+      margin-bottom: 2px;
+    }
+    
+    .node-type {
+      font-size: $font-size-sm;
+      color: $text-color-secondary;
+    }
+  }
+  
+  .node-status {
+    .el-icon {
+      font-size: 16px;
+    }
+  }
+}
+
+.node-content {
+  padding: $spacing-lg;
+  
+  .node-field {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-base;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    label {
+      font-size: $font-size-sm;
+      color: $text-color-secondary;
+      font-weight: $font-weight-medium;
+    }
+    
+    span {
+      font-size: $font-size-sm;
+      color: $text-color;
+      font-weight: $font-weight-medium;
+    }
+    
+    .field-value {
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .field-empty {
+      color: $text-color-tertiary;
+      font-style: italic;
+    }
+  }
+}
+
+.node-footer {
+  padding: $spacing-base $spacing-lg;
+  background: $bg-color-secondary;
+  border-top: $border-width-thin solid $border-color;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  .node-actions {
+    display: flex;
+    gap: $spacing-xs;
+    
+    .action-btn {
+      padding: $spacing-xs;
+      border: none;
+      background: transparent;
+      border-radius: $border-radius-sm;
+      cursor: pointer;
+      color: $text-color-secondary;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background: $bg-color-tertiary;
+        color: $text-color;
+      }
+      
+      .el-icon {
+        font-size: 14px;
+      }
+    }
+  }
+  
+  .node-info {
+    font-size: $font-size-xs;
+    color: $text-color-tertiary;
+  }
+}
+
+// ===== 特定節點類型樣式 =====
+
+// Line Pay 節點 (使用專案色卡)
+.line-pay-node {
+  .node-header {
+    background: linear-gradient(135deg, $success-color 0%, darken($success-color, 10%) 100%);
+    color: $white;
+
+    .node-type {
+      color: rgba($white, 0.8);
+    }
+  }
+
+  &:hover {
+    border-color: $success-color;
+    box-shadow: 0 8px 25px -5px rgba($success-color, 0.3);
+  }
+}
+
+// ECPay 節點 (使用專案色卡)
+.ecpay-node {
+  .node-header {
+    background: linear-gradient(135deg, $accent-orange 0%, darken($accent-orange, 10%) 100%);
+    color: $white;
+
+    .node-type {
+      color: rgba($white, 0.8);
+    }
+  }
+
+  &:hover {
+    border-color: $accent-orange;
+    box-shadow: 0 8px 25px -5px rgba($accent-orange, 0.3);
+  }
+}
+
+// 觸發節點 (使用專案色卡)
+.trigger-node {
+  .node-header {
+    background: linear-gradient(135deg, $accent-crimson 0%, darken($accent-crimson, 10%) 100%);
+    color: $white;
+
+    .node-type {
+      color: rgba($white, 0.8);
+    }
+  }
+
+  &:hover {
+    border-color: $accent-crimson;
+    box-shadow: 0 8px 25px -5px rgba($accent-crimson, 0.3);
+  }
+}
+
+// 政府服務節點 (使用專案色卡)
+.gov-service-node {
+  .node-header {
+    background: linear-gradient(135deg, $info-color 0%, darken($info-color, 10%) 100%);
+    color: $white;
+
+    .node-type {
+      color: rgba($white, 0.8);
+    }
+  }
+
+  &:hover {
+    border-color: $info-color;
+    box-shadow: 0 8px 25px -5px rgba($info-color, 0.3);
+  }
+}
+
+// 交通服務節點 (使用專案色卡)
+.transport-node {
+  .node-header {
+    background: linear-gradient(135deg, $accent-tan 0%, darken($accent-tan, 10%) 100%);
+    color: $white;
+
+    .node-type {
+      color: rgba($white, 0.8);
+    }
+  }
+
+  &:hover {
+    border-color: $accent-tan;
+    box-shadow: 0 8px 25px -5px rgba($accent-tan, 0.3);
+  }
+}
+
+// ===== 動畫效果 =====
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes nodeGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba($primary-color, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba($primary-color, 0.6);
+  }
+}
+
+// ===== 響應式設計 =====
+
+@media (max-width: 768px) {
+  .taiwan-node {
+    min-width: 160px;
+    max-width: 240px;
+    
+    .node-header {
+      padding: $spacing-sm $spacing-base;
+      
+      .node-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: $spacing-sm;
+      }
+      
+      .node-name {
+        font-size: $font-size-sm;
+      }
+      
+      .node-type {
+        font-size: $font-size-xs;
+      }
+    }
+    
+    .node-content {
+      padding: $spacing-base;
+      
+      .node-field {
+        margin-bottom: $spacing-sm;
+        
+        label, span {
+          font-size: $font-size-xs;
+        }
+      }
+    }
+  }
+  
+  .vue-flow__controls {
+    .vue-flow__controls-button {
+      padding: $spacing-xs;
+      
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+}
+
+// ===== 深色主題支援 =====
+
+[data-theme="dark"] {
+  .vue-flow {
+    .vue-flow__background {
+      background-color: var(--bg-color);
+    }
+    
+    .vue-flow__controls {
+      background: var(--bg-color-secondary);
+      border-color: var(--border-color);
+      
+      .vue-flow__controls-button {
+        color: var(--text-color-secondary);
+        
+        &:hover {
+          background: var(--bg-color-tertiary);
+          color: var(--text-color);
+        }
+      }
+    }
+    
+    .vue-flow__minimap {
+      background: var(--bg-color-secondary);
+      border-color: var(--border-color);
+    }
+  }
+  
+  .taiwan-node {
+    background: var(--bg-color-secondary);
+    border-color: var(--border-color);
+    
+    .node-header {
+      background: var(--bg-color-tertiary);
+      border-color: var(--border-color);
+      
+      .node-name {
+        color: var(--text-color);
+      }
+      
+      .node-type {
+        color: var(--text-color-secondary);
+      }
+    }
+    
+    .node-content {
+      .node-field {
+        label {
+          color: var(--text-color-secondary);
+        }
+        
+        span {
+          color: var(--text-color);
+        }
+      }
+    }
+  }
+}

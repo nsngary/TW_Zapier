@@ -1,0 +1,52 @@
+# 台灣在地化流程自動化平台 - 後端開發環境 Dockerfile
+
+FROM python:3.11-slim
+
+# 設定工作目錄
+WORKDIR /app
+
+# 設定環境變數
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# 安裝系統依賴
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    libpq-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# 建立非 root 使用者
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# 複製 requirements 檔案
+COPY requirements.txt .
+
+# 安裝 Python 依賴
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# 建立必要目錄
+RUN mkdir -p /app/logs && \
+    chown -R appuser:appuser /app
+
+# 複製應用程式碼
+COPY . .
+
+# 設定檔案權限
+RUN chown -R appuser:appuser /app
+
+# 切換到非 root 使用者
+USER appuser
+
+# 暴露埠號
+EXPOSE 8000
+
+# 健康檢查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# 預設命令 (在 docker-compose.yml 中會被覆蓋)
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

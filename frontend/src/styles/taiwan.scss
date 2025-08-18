@@ -1,0 +1,431 @@
+/**
+ * 台灣特有樣式
+ */
+
+// ===== 台灣品牌色彩 =====
+
+.text-taiwan-red {
+  color: $taiwan-red;
+}
+
+.text-taiwan-blue {
+  color: $taiwan-blue;
+}
+
+.text-taiwan-green {
+  color: $taiwan-green;
+}
+
+.bg-taiwan-red {
+  background-color: $taiwan-red;
+}
+
+.bg-taiwan-blue {
+  background-color: $taiwan-blue;
+}
+
+.bg-taiwan-green {
+  background-color: $taiwan-green;
+}
+
+// ===== 金流服務樣式 =====
+
+.line-pay-theme {
+  .btn-line-pay {
+    @include button-variant($line-pay-green);
+    
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEwIDIwQzE1LjUyMjggMjAgMjAgMTUuNTIyOCAyMCAxMEMyMCA0LjQ3NzE1IDE1LjUyMjggMCAxMCAwQzQuNDc3MTUgMCAwIDQuNDc3MTUgMCAxMEMwIDE1LjUyMjggNC40NzcxNSAyMCAxMCAyMFoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=');
+      background-size: contain;
+      vertical-align: middle;
+    }
+  }
+
+  .line-pay-card {
+    border: 2px solid $line-pay-green;
+    border-radius: $border-radius-lg;
+    
+    .card-header {
+      background-color: $line-pay-green;
+      color: white;
+    }
+  }
+}
+
+.ecpay-theme {
+  .btn-ecpay {
+    @include button-variant($ecpay-blue);
+  }
+
+  .ecpay-card {
+    border: 2px solid $ecpay-blue;
+    border-radius: $border-radius-lg;
+    
+    .card-header {
+      background-color: $ecpay-blue;
+      color: white;
+    }
+  }
+}
+
+.newebpay-theme {
+  .btn-newebpay {
+    @include button-variant($newebpay-orange);
+  }
+
+  .newebpay-card {
+    border: 2px solid $newebpay-orange;
+    border-radius: $border-radius-lg;
+    
+    .card-header {
+      background-color: $newebpay-orange;
+      color: white;
+    }
+  }
+}
+
+// ===== 政府服務樣式 =====
+
+.gov-theme {
+  .btn-gov {
+    @include button-variant($gov-blue);
+  }
+
+  .gov-card {
+    border: 2px solid $gov-blue;
+    border-radius: $border-radius-lg;
+    
+    .card-header {
+      background-color: $gov-blue;
+      color: white;
+      
+      &::before {
+        content: '🏛️';
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+.airport-theme {
+  .btn-airport {
+    @include button-variant($airport-blue);
+  }
+
+  .airport-card {
+    border: 2px solid $airport-blue;
+    border-radius: $border-radius-lg;
+    
+    .card-header {
+      background-color: $airport-blue;
+      color: white;
+      
+      &::before {
+        content: '✈️';
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+// ===== 台灣節點樣式 =====
+
+.taiwan-node {
+  position: relative;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, $taiwan-red 0%, $taiwan-blue 50%, $taiwan-green 100%);
+  }
+
+  &.node-payment {
+    border-left: 4px solid $line-pay-green;
+  }
+
+  &.node-government {
+    border-left: 4px solid $gov-blue;
+  }
+
+  &.node-ecommerce {
+    border-left: 4px solid $warning-color;
+  }
+
+  &.node-logistics {
+    border-left: 4px solid $info-color;
+  }
+}
+
+// ===== 台灣表單樣式 =====
+
+.taiwan-form {
+  .form-group {
+    &.id-number-group {
+      .form-control {
+        font-family: $font-family-code;
+        letter-spacing: 1px;
+      }
+    }
+
+    &.business-number-group {
+      .form-control {
+        font-family: $font-family-code;
+        letter-spacing: 1px;
+      }
+    }
+
+    &.phone-group {
+      .form-control {
+        font-family: $font-family-code;
+      }
+    }
+
+    &.amount-group {
+      .form-control {
+        text-align: right;
+        font-family: $font-family-code;
+      }
+
+      &::after {
+        content: 'TWD';
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $text-color-tertiary;
+        font-size: $font-size-sm;
+      }
+    }
+  }
+}
+
+// ===== 台灣地址選擇器 =====
+
+.taiwan-address-selector {
+  .address-row {
+    display: flex;
+    gap: $spacing-base;
+    margin-bottom: $spacing-base;
+
+    .city-select {
+      flex: 1;
+    }
+
+    .district-select {
+      flex: 1;
+    }
+  }
+
+  .postal-code-display {
+    display: inline-block;
+    padding: $spacing-xs $spacing-sm;
+    background-color: $bg-color-secondary;
+    border: $border-width-thin solid $border-color;
+    border-radius: $border-radius-sm;
+    font-family: $font-family-code;
+    font-size: $font-size-sm;
+    color: $text-color-secondary;
+  }
+}
+
+// ===== 台灣日期選擇器 =====
+
+.taiwan-date-picker {
+  .republic-year-toggle {
+    margin-bottom: $spacing-sm;
+    
+    .form-check-label {
+      font-size: $font-size-sm;
+      color: $text-color-secondary;
+      
+      &::after {
+        content: '（民國年）';
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .date-display {
+    .western-year {
+      font-weight: $font-weight-normal;
+    }
+
+    .republic-year {
+      font-weight: $font-weight-medium;
+      color: $taiwan-blue;
+      
+      &::after {
+        content: '年';
+        margin-left: 2px;
+      }
+    }
+  }
+}
+
+// ===== 台灣金額顯示 =====
+
+.taiwan-amount {
+  font-family: $font-family-code;
+  font-weight: $font-weight-medium;
+  
+  .currency-symbol {
+    color: $text-color-secondary;
+    margin-right: 2px;
+  }
+
+  .amount-value {
+    color: $text-color;
+  }
+
+  .amount-unit {
+    color: $text-color-tertiary;
+    font-size: 0.9em;
+    margin-left: 2px;
+  }
+
+  &.amount-large {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+  }
+
+  &.amount-positive {
+    color: $success-color;
+  }
+
+  &.amount-negative {
+    color: $error-color;
+  }
+
+  &.amount-zero {
+    color: $text-color-tertiary;
+  }
+}
+
+// ===== 台灣狀態指示器 =====
+
+.taiwan-status {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-base;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  &.status-active {
+    background-color: rgba($success-color, 0.1);
+    color: $success-color;
+    
+    .status-dot {
+      background-color: $success-color;
+    }
+  }
+
+  &.status-inactive {
+    background-color: rgba($text-color-tertiary, 0.1);
+    color: $text-color-tertiary;
+    
+    .status-dot {
+      background-color: $text-color-tertiary;
+    }
+  }
+
+  &.status-pending {
+    background-color: rgba($warning-color, 0.1);
+    color: $warning-color;
+    
+    .status-dot {
+      background-color: $warning-color;
+    }
+  }
+
+  &.status-error {
+    background-color: rgba($error-color, 0.1);
+    color: $error-color;
+    
+    .status-dot {
+      background-color: $error-color;
+    }
+  }
+}
+
+// ===== 台灣工作流程樣式 =====
+
+.taiwan-workflow {
+  .workflow-header {
+    background: linear-gradient(135deg, $taiwan-blue 0%, $primary-color 100%);
+    color: white;
+    padding: $spacing-lg;
+    border-radius: $border-radius-lg $border-radius-lg 0 0;
+
+    .workflow-title {
+      font-size: $font-size-xl;
+      font-weight: $font-weight-semibold;
+      margin-bottom: $spacing-xs;
+    }
+
+    .workflow-description {
+      opacity: 0.9;
+      font-size: $font-size-sm;
+    }
+  }
+
+  .workflow-stats {
+    display: flex;
+    gap: $spacing-lg;
+    padding: $spacing-base $spacing-lg;
+    background-color: $bg-color-secondary;
+    border-bottom: $border-width-thin solid $border-color-light;
+
+    .stat-item {
+      text-align: center;
+
+      .stat-value {
+        font-size: $font-size-lg;
+        font-weight: $font-weight-semibold;
+        color: $text-color;
+      }
+
+      .stat-label {
+        font-size: $font-size-xs;
+        color: $text-color-secondary;
+        margin-top: $spacing-xs;
+      }
+    }
+  }
+}
+
+// ===== 響應式調整 =====
+
+@include respond-to(sm) {
+  .taiwan-address-selector {
+    .address-row {
+      flex-direction: column;
+      gap: $spacing-sm;
+    }
+  }
+
+  .taiwan-workflow {
+    .workflow-stats {
+      flex-direction: column;
+      gap: $spacing-sm;
+    }
+  }
+}

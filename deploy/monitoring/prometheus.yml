@@ -1,0 +1,71 @@
+# 台灣在地化流程自動化平台 - Prometheus 監控配置
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'tw-zapier-monitor'
+
+# 規則檔案
+rule_files:
+  - "rules/*.yml"
+
+# 監控目標配置
+scrape_configs:
+  # Prometheus 自身監控
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 5s
+    metrics_path: /metrics
+
+  # FastAPI 後端監控
+  - job_name: 'tw-zapier-backend'
+    static_configs:
+      - targets: ['backend:8000']
+    scrape_interval: 10s
+    metrics_path: /metrics
+    scrape_timeout: 5s
+
+  # n8n 工作流引擎監控
+  - job_name: 'n8n'
+    static_configs:
+      - targets: ['n8n:5678']
+    scrape_interval: 30s
+    metrics_path: /metrics
+    scrape_timeout: 10s
+
+  # PostgreSQL 資料庫監控 (需要 postgres_exporter)
+  - job_name: 'postgres'
+    static_configs:
+      - targets: ['postgres-exporter:9187']
+    scrape_interval: 30s
+    metrics_path: /metrics
+    scrape_timeout: 10s
+
+  # Redis 監控 (需要 redis_exporter)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-exporter:9121']
+    scrape_interval: 30s
+    metrics_path: /metrics
+    scrape_timeout: 10s
+
+  # Node.js 應用監控 (如果前端有 metrics 端點)
+  - job_name: 'tw-zapier-frontend'
+    static_configs:
+      - targets: ['frontend:3000']
+    scrape_interval: 30s
+    metrics_path: /metrics
+    scrape_timeout: 10s
+
+# 告警管理器配置 (可選)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# 遠端寫入配置 (可選，用於長期儲存)
+# remote_write:
+#   - url: "http://remote-storage:8086/api/v1/prom/write"

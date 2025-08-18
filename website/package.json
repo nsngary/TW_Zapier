@@ -1,0 +1,46 @@
+{
+  "name": "tw-zapier-website",
+  "version": "1.0.0",
+  "description": "TW_Zapier 官方網站",
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev --host 0.0.0.0 --port 4000",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint . --ext .vue,.js,.ts --fix",
+    "type-check": "nuxt typecheck",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:bg": "playwright test --reporter=dot -g \"Homepage Page-wide Gradient Background\""
+  },
+  "dependencies": {
+    "@nuxt/content": "^2.13.4",
+    "@nuxtjs/tailwindcss": "^6.12.1",
+    "@pinia/nuxt": "^0.5.5",
+    "@vueuse/nuxt": "^11.2.0",
+    "gsap": "^3.13.0",
+    "nuxt": "^3.14.159",
+    "pinia": "^2.1.7",
+    "vue": "^3.4.0",
+    "vue-router": "^4.2.5"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@nuxt/devtools": "^1.6.0",
+    "@nuxt/eslint-config": "^0.7.3",
+    "@playwright/test": "^1.54.2",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.9",
+    "@tailwindcss/typography": "^0.5.15",
+    "@types/node": "^20.10.5",
+    "eslint": "^8.57.1",
+    "typescript": "~5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}

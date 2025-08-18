@@ -1,0 +1,27 @@
+{
+  "name": "@tw-zapier/shared",
+  "version": "1.0.0",
+  "description": "TW_Zapier 共享組件和工具庫",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint . --ext .ts,.vue --fix",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "dayjs": "^1.11.10",
+    "lodash-es": "^4.17.21",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.12",
+    "@types/uuid": "^10.0.0",
+    "typescript": "~5.3.3"
+  },
+  "peerDependencies": {
+    "vue": "^3.4.0"
+  }
+}

@@ -1,0 +1,268 @@
+/**
+ * SCSS 變數定義
+ */
+
+// ===== 顏色系統 - 與 Website 設計規範同步 =====
+
+// 主要顏色 - 使用 Website 設計規範的 primary 色系
+$primary-50: #f7f5f3;
+$primary-75: #fbfaf8;
+$primary-100: #ede8e3;
+$primary-200: rgb(221, 212, 202);
+$primary-300: #c7b8a8;
+$primary-400: #b09a85;
+$primary-500: #86735E;  // Website 主色調
+$primary-600: #7a6654;  // 懸停效果
+$primary-700: #665548;
+$primary-800: #54463d;
+$primary-900: #463a33;
+
+// 主要顏色別名（向後相容）
+$primary-color: $primary-500;
+$primary-light: $primary-400;
+$primary-dark: $primary-600;
+
+// 強調色 - 使用 Website 設計規範的 accent 色系
+$accent-red: #C2474A;
+$accent-orange: #C07F56;
+$accent-crimson: #C23928;
+$accent-tan: #D19872;
+$accent-pink: #EC7687;
+$accent-brown: #662D10;
+$accent-olive: #644F29;
+$accent-gray: #6C604D;
+$accent-amber: #A86F4B;
+
+// 次要顏色 - 使用 accent 中的橘色作為次要色
+$secondary-color: $accent-orange;
+$secondary-light: #D19872;
+$secondary-dark: #A86F4B;
+
+// 功能顏色 - 使用 Website 設計規範的 semantic 色彩
+$success-color: #667539;
+$warning-color: #B89C5C;
+$error-color: #981207;
+$info-color: #5ba5c5ff;
+
+// 中性顏色 - 使用 Website 設計規範的 neutral 色系
+$white: #ffffff;
+$black: #000000;
+$neutral-50: #fafaf9;
+$neutral-100: #f5f5f4;
+$neutral-200: #e7e5e4;
+$neutral-300: #d6d3d1;
+$neutral-400: #a8a29e;
+$neutral-500: #78716c;
+$neutral-600: #57534e;
+$neutral-700: #44403c;
+$neutral-800: #413735;
+$neutral-900: #1c1917;
+
+// 中性顏色別名（向後相容） 
+$gray-50: $neutral-50;
+$gray-100: $neutral-100;
+$gray-200: $neutral-200;
+$gray-300: $neutral-300;
+$gray-400: $neutral-400;
+$gray-500: $neutral-500;
+$gray-600: $neutral-600;
+$gray-700: $neutral-700;
+$gray-800: $neutral-800;
+$gray-900: $neutral-900;
+
+// 背景顏色 - 使用 Website 設計規範的中性色系
+$bg-color: $neutral-50;  // 主背景色使用最淺的中性色
+$bg-color-secondary: $neutral-100;  // 次要背景色
+$bg-color-tertiary: $neutral-200;   // 第三層背景色
+
+// 文字顏色 - 使用中性色系
+$text-color: $neutral-800;
+$text-color-secondary: $neutral-600;
+$text-color-tertiary: $neutral-500;
+$text-color-disabled: $neutral-400;
+
+// 邊框顏色 - 使用中性色系
+$border-color: $neutral-300;
+$border-color-light: $neutral-200;
+$border-color-dark: $neutral-400;
+
+// ===== 字體系統 - 統一設計系統字體 =====
+
+// 字體家族 - 使用設計系統定義
+$font-family-sans: 'Noto Sans TC', 'Inter', system-ui, sans-serif;
+$font-family-display: 'Noto Sans TC', 'Inter', system-ui, sans-serif;
+$font-family-mono: 'JetBrains Mono', 'Menlo', 'Monaco', monospace;
+
+// 字體家族別名（向後相容）
+$font-family-base: $font-family-sans;
+$font-family-code: $font-family-mono;
+
+// 字體大小 - 使用設計系統定義
+$font-size-xs: 0.75rem;    // 12px
+$font-size-sm: 0.875rem;   // 14px
+$font-size-base: 1rem;     // 16px
+$font-size-lg: 1.125rem;   // 18px
+$font-size-xl: 1.25rem;    // 20px
+$font-size-2xl: 1.5rem;    // 24px
+$font-size-3xl: 1.875rem;  // 30px
+$font-size-4xl: 2.25rem;   // 36px
+$font-size-5xl: 3rem;      // 48px
+$font-size-6xl: 3.75rem;   // 60px
+$font-size-7xl: 4.5rem;    // 72px
+$font-size-8xl: 6rem;      // 96px
+$font-size-9xl: 8rem;      // 128px
+
+// 字體粗細 - 使用設計系統定義
+$font-weight-thin: 100;
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+$font-weight-extrabold: 800;
+$font-weight-black: 900;
+
+// 行高 - 使用設計系統定義
+$line-height-none: 1;
+$line-height-tight: 1.25;
+$line-height-snug: 1.375;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.625;
+$line-height-loose: 2;
+
+// ===== 間距系統 =====
+
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-base: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-2xl: 48px;
+$spacing-3xl: 64px;
+
+// ===== 尺寸系統 =====
+
+// 元件高度
+$height-xs: 24px;
+$height-sm: 32px;
+$height-base: 40px;
+$height-lg: 48px;
+$height-xl: 56px;
+
+// 邊框半徑
+$border-radius-xs: 2px;
+$border-radius-sm: 4px;
+$border-radius-base: 6px;
+$border-radius-lg: 8px;
+$border-radius-xl: 12px;
+$border-radius-2xl: 16px;
+$border-radius-full: 50%;
+
+// 邊框寬度
+$border-width-thin: 1px;
+$border-width-base: 2px;
+$border-width-thick: 4px;
+
+// ===== 陰影系統 =====
+
+$shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+$shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+$shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+$shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+// ===== 動畫系統 =====
+
+// 過渡時間
+$transition-fast: 0.15s;
+$transition-base: 0.3s;
+$transition-slow: 0.5s;
+
+// 緩動函數
+$ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+$ease-in: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+$ease-in-out: cubic-bezier(0.645, 0.045, 0.355, 1);
+
+// ===== 響應式斷點 =====
+
+$breakpoint-xs: 480px;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-2xl: 1600px;
+
+// ===== Z-index 層級 =====
+
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;
+
+// ===== 佈局系統 =====
+
+// 容器寬度
+$container-sm: 540px;
+$container-md: 720px;
+$container-lg: 960px;
+$container-xl: 1140px;
+$container-2xl: 1320px;
+
+// 側邊欄
+$sidebar-width: 256px;
+$sidebar-collapsed-width: 64px;
+
+// 標頭
+$header-height: 64px;
+
+// 頁腳
+$footer-height: 48px;
+
+// ===== n8n 風格深色主題變數 =====
+
+// n8n 深色主題背景色
+$n8n-bg-primary: #0f172a;      // 最深背景色
+$n8n-bg-secondary: #1e293b;    // 次要背景色（面板）
+$n8n-bg-tertiary: #334155;     // 第三層背景色
+$n8n-bg-canvas: #f9fafb;       // 畫布背景色（淺色）
+
+// n8n 深色主題文字色
+$n8n-text-primary: #f8fafc;    // 主要文字色
+$n8n-text-secondary: #e2e8f0;  // 次要文字色
+$n8n-text-tertiary: #94a3b8;   // 第三層文字色
+$n8n-text-disabled: #64748b;   // 禁用文字色
+
+// n8n 深色主題邊框色
+$n8n-border-primary: #334155;  // 主要邊框色
+$n8n-border-secondary: #475569; // 次要邊框色
+
+// n8n 節點色彩
+$n8n-node-trigger: #3b82f6;    // 觸發節點藍色
+$n8n-node-action: #10b981;     // 動作節點綠色
+$n8n-node-condition: #f59e0b;  // 條件節點橙色
+$n8n-node-notification: #8b5cf6; // 通知節點紫色
+
+// n8n 連接線色彩
+$n8n-connection-default: #6b7280;
+$n8n-connection-active: #3b82f6;
+$n8n-connection-hover: #60a5fa;
+
+// ===== 台灣特有變數 =====
+
+// 台灣品牌色彩
+$taiwan-red: #dc143c;
+$taiwan-blue: #003f7f;
+$taiwan-green: #228b22;
+
+// 金流服務色彩
+$line-pay-green: #00c300;
+$ecpay-blue: #0066cc;
+$newebpay-orange: #ff6600;
+
+// 政府服務色彩
+$gov-blue: #003f7f;
+$airport-blue: #1e90ff;

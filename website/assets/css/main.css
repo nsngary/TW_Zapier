@@ -1,0 +1,518 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 基礎樣式 */
+@layer base {
+  html {
+    font-family: 'Noto Sans TC', 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply text-neutral-800 bg-white;
+    line-height: 1.6;
+  }
+
+  /* 內容寬度與 gutter 響應式變數（全站同步） */
+  :root {
+    --content-max: 1280px;      /* 同步四區塊的 content 最大寬度 */
+    --gutter-min: 15px;         /* 最小 gutter */
+    --gutter-max: 260px;        /* 最大 gutter */
+    /* 當視窗變寬 → 先長 gutter；變窄 → 先縮 gutter，直到最小 15px，才縮 content */
+    --gutter: clamp(var(--gutter-min), calc((100vw - var(--content-max)) / 2), var(--gutter-max));
+    --content: min(var(--content-max), calc(100vw - 2 * var(--gutter)));
+  }
+
+  /* 繁體中文字體優化 */
+  .font-tc {
+    font-family: 'Noto Sans TC', system-ui, sans-serif;
+    font-feature-settings: 'kern' 1;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* 標題樣式 */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-tc font-semibold text-neutral-900;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl lg:text-5xl;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+
+  h4 {
+    @apply text-xl md:text-2xl;
+  }
+
+  /* 段落樣式 */
+  p {
+    @apply text-neutral-700 leading-relaxed;
+  }
+
+  /* 連結樣式 */
+  a {
+    @apply transition-colors duration-200;
+  }
+
+  /* 按鈕基礎樣式 */
+  button {
+    @apply transition-all duration-200;
+  }
+}
+
+/* 組件樣式 */
+@layer components {
+  /* ===== 區塊容器 ===== */
+  /* 外殼：手機 1 欄、≥lg 時 2:8:2 三欄 */
+  .section-shell {
+    display: grid;
+    width: 100%;
+    grid-template-columns: var(--gutter) var(--content) var(--gutter);
+  }
+
+  /* 兩側 gutter（小螢幕隱藏，≥lg 顯示） */
+  .section-gutter {
+    display: block;
+    width: var(--gutter);
+  }
+
+  /* 內容容器：統一寬度上限與內距、左右描邊 */
+  .section-content {
+    grid-column: 2;
+    width: 100%;
+    max-width: none;
+    /* 保留原有垂直內距（py-10 sm:py-12 lg:py-16）由 @apply 提供 */
+    border-left: 1px solid theme('colors.primary.100');
+    border-right: 1px solid theme('colors.primary.100');
+  }
+
+  .section-content-nopadding {
+    @apply w-full mx-0 max-w-[min(calc(100vw-40px),1280px)]
+           border-x border-primary-100;
+  }
+
+  /* 內容內部網格（Hero/一般雙欄版型） */
+  .section-content-grid {
+    @apply grid gap-8 lg:gap-16 lg:grid-cols-[576px_1fr];
+    height: 94.5vh;
+  }
+
+  /* 可選修飾：整段上下邊框 / 背景色 */
+  .section-border-y { @apply border-y border-primary-100; }
+  .section-bg-neutral { @apply bg-neutral-50; }
+  .section-bg-primary { @apply bg-primary-50; }
+
+  /* 若某區塊要較緊湊的上下內距（例如卡片列） */
+  .section-content--dense { @apply py-8 lg:py-12; }
+
+  /* ===== 按鈕系統 ===== */
+
+  /* 主要按鈕 */
+  .btn-primary {
+    @apply bg-primary-500 hover:bg-primary-600 active:bg-primary-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+
+  /* 次要按鈕 */
+  .btn-secondary {
+    @apply bg-white hover:bg-neutral-50 active:bg-neutral-100 text-primary-600 font-medium px-6 py-3 rounded-lg border border-primary-200 hover:border-primary-300 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+
+  /* 輪廓按鈕 */
+  .btn-outline {
+    @apply bg-transparent hover:bg-primary-50 active:bg-primary-100 text-primary-600 font-medium px-6 py-3 rounded-lg border border-primary-300 hover:border-primary-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+  }
+
+  /* 危險按鈕 */
+  .btn-danger {
+    @apply bg-accent-red hover:bg-red-600 active:bg-red-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent-red focus:ring-offset-2;
+  }
+
+  /* 成功按鈕 */
+  .btn-success {
+    @apply bg-green-500 hover:bg-green-600 active:bg-green-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2;
+  }
+
+  /* 按鈕尺寸變體 */
+  .btn-sm {
+    @apply px-4 py-2 text-sm;
+  }
+
+  .btn-lg {
+    @apply px-8 py-4 text-lg;
+  }
+
+  .btn-xl {
+    @apply px-10 py-5 text-xl;
+  }
+
+  /* 禁用狀態 */
+  .btn-disabled {
+    @apply opacity-50 cursor-not-allowed pointer-events-none;
+  }
+
+  /* AIPlusAutomation */
+  
+
+
+
+  /* ===== 卡片系統 ===== */
+
+  /* 基礎卡片 */
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-neutral-200 p-6 transition-all duration-200 hover:shadow-md;
+  }
+
+  /* 卡片變體 */
+  .card-elevated {
+    @apply shadow-lg hover:shadow-xl;
+  }
+
+  .card-flat {
+    @apply shadow-none border-2;
+  }
+
+  .card-interactive {
+    @apply cursor-pointer hover:scale-105 hover:shadow-lg;
+  }
+
+  /* 卡片尺寸 */
+  .card-sm {
+    @apply p-4;
+  }
+
+  .card-lg {
+    @apply p-8;
+  }
+
+  /* ===== 輸入框系統 ===== */
+
+  .input-base {
+    @apply w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200;
+  }
+
+  .input-error {
+    @apply border-accent-red focus:ring-accent-red;
+  }
+
+  .input-success {
+    @apply border-green-500 focus:ring-green-500;
+  }
+
+  /* ===== 容器系統 ===== */
+  /* .container-full {
+    @apply max-w-full sm:px-6 lg:px-8;
+  } */
+
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-narrow {
+    @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .container-wide {
+    @apply max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* ===== 區塊間距 ===== */
+
+  .section-padding {
+    @apply py-16 md:py-20 lg:py-24;
+  }
+
+  .section-padding-sm {
+    @apply py-8 md:py-12 lg:py-16;
+  }
+
+  .section-padding-lg {
+    @apply py-20 md:py-28 lg:py-32;
+  }
+
+  /* ===== 背景系統 ===== */
+
+  /* 漸層背景 */
+  .gradient-bg {
+    background: linear-gradient(135deg, #86735E 0%, #C07F56 100%);
+  }
+
+  .gradient-bg-warm {
+    background: linear-gradient(135deg, #D19872 0%, #EC7687 100%);
+  }
+
+  .gradient-bg-cool {
+    background: linear-gradient(135deg, #6C604D 0%, #644F29 100%);
+  }
+
+  /* 文字漸層 */
+  .text-gradient {
+    background: linear-gradient(135deg, #86735E 0%, #C2474A 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-warm {
+    background: linear-gradient(135deg, #C07F56 0%, #D19872 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* 工具樣式 */
+@layer utilities {
+  /* ===== 文字工具 ===== */
+
+  /* 文字平衡 */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* 文字美化 */
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* 文字截斷 */
+  .text-truncate {
+    @apply truncate;
+  }
+
+  .text-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .text-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ===== 滾動條工具 ===== */
+
+  /* 隱藏滾動條 */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 自定義滾動條 */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: theme('colors.neutral.100');
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: theme('colors.neutral.300');
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: theme('colors.neutral.400');
+  }
+
+  /* ===== 動畫工具 ===== */
+
+  /* 動畫延遲 */
+  .animation-delay-75 {
+    animation-delay: 75ms;
+  }
+
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animation-delay-150 {
+    animation-delay: 150ms;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+
+  .animation-delay-600 {
+    animation-delay: 600ms;
+  }
+
+  .animation-delay-700 {
+    animation-delay: 700ms;
+  }
+
+  .animation-delay-1000 {
+    animation-delay: 1000ms;
+  }
+
+  /* 動畫持續時間 */
+  .animation-duration-75 {
+    animation-duration: 75ms;
+  }
+
+  .animation-duration-100 {
+    animation-duration: 100ms;
+  }
+
+  .animation-duration-150 {
+    animation-duration: 150ms;
+  }
+
+  .animation-duration-200 {
+    animation-duration: 200ms;
+  }
+
+  .animation-duration-300 {
+    animation-duration: 300ms;
+  }
+
+  .animation-duration-500 {
+    animation-duration: 500ms;
+  }
+
+  .animation-duration-700 {
+    animation-duration: 700ms;
+  }
+
+  .animation-duration-1000 {
+    animation-duration: 1000ms;
+  }
+
+  /* ===== 效果工具 ===== */
+
+  /* 視差效果 */
+  .parallax {
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* 玻璃效果 */
+  .glass {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* 發光效果 */
+  .glow {
+    box-shadow: 0 0 20px rgba(134, 115, 94, 0.3);
+  }
+
+  .glow-hover:hover {
+    box-shadow: 0 0 30px rgba(134, 115, 94, 0.5);
+  }
+
+  /* ===== 互動工具 ===== */
+
+  /* 懸停效果 */
+  .hover-lift {
+    @apply transition-transform duration-200 hover:-translate-y-1;
+  }
+
+  .hover-scale {
+    @apply transition-transform duration-200 hover:scale-105;
+  }
+
+  .hover-rotate {
+    @apply transition-transform duration-200 hover:rotate-3;
+  }
+
+  /* 焦點效果 */
+  .focus-visible-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2;
+  }
+
+  /* ===== 佈局工具 ===== */
+
+  /* 居中工具 */
+  .center-absolute {
+    @apply absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2;
+  }
+
+  .center-flex {
+    @apply flex items-center justify-center;
+  }
+
+  /* 全屏工具 */
+  .full-screen {
+    @apply fixed inset-0 w-full h-full;
+  }
+
+  /* 寬高比工具 */
+  .aspect-golden {
+    aspect-ratio: 1.618 / 1;
+  }
+
+  .aspect-4-3 {
+    aspect-ratio: 4 / 3;
+  }
+
+  .aspect-3-2 {
+    aspect-ratio: 3 / 2;
+  }
+}
+
+/* 響應式字體大小 */
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+/* 深色模式支援 (預留) */
+@media (prefers-color-scheme: dark) {
+  /* 暫時保留，未來可能需要 */
+}
+
+/* 減少動畫偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

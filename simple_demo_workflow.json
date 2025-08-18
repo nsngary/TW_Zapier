@@ -1,0 +1,189 @@
+{
+  "name": "台灣電商訂單處理 Demo",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "taiwan-order-demo",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook-1",
+      "name": "訂單 Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {
+              "name": "customer_name",
+              "value": "={{ $json.customer_name || '測試客戶' }}"
+            },
+            {
+              "name": "total_amount",
+              "value": "={{ $json.total_amount || 50000 }}"
+            },
+            {
+              "name": "payment_method",
+              "value": "={{ $json.total_amount > 100000 ? 'ecPay' : 'linePay' }}"
+            }
+          ]
+        }
+      },
+      "id": "set-1",
+      "name": "處理訂單資料",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:8000/api/v1/demo/orders",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "jsonParameters": {
+          "parameters": [
+            {
+              "name": "customer_name",
+              "value": "={{ $json.customer_name }}"
+            },
+            {
+              "name": "customer_email",
+              "value": "demo@example.com"
+            },
+            {
+              "name": "customer_phone",
+              "value": "0912345678"
+            },
+            {
+              "name": "total_amount",
+              "value": "={{ $json.total_amount }}"
+            },
+            {
+              "name": "payment_method",
+              "value": "={{ $json.payment_method }}"
+            },
+            {
+              "name": "items",
+              "value": "[{\"product_id\": \"DEMO001\", \"product_name\": \"示範商品\", \"quantity\": 1, \"unit_price\": {{ $json.total_amount }}, \"subtotal\": {{ $json.total_amount }}}]"
+            }
+          ]
+        }
+      },
+      "id": "http-1",
+      "name": "呼叫訂單 API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:8000/api/v1/demo/notifications",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "jsonParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "訂單 {{ $json.order_id }} 已建立，客戶：{{ $json.customer_name }}，金額：NT${{ Math.round($json.total_amount / 100) }}，付款方式：{{ $json.payment_method }}"
+            },
+            {
+              "name": "recipient",
+              "value": "店家管理員"
+            },
+            {
+              "name": "notification_type",
+              "value": "order_created"
+            }
+          ]
+        }
+      },
+      "id": "http-2",
+      "name": "發送通知",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ {\n  \"success\": true,\n  \"message\": \"台灣電商訂單處理完成\",\n  \"order_id\": $json.order_id,\n  \"customer_name\": $json.customer_name,\n  \"payment_method\": $json.payment_method,\n  \"notification_sent\": true,\n  \"processed_at\": new Date().toISOString()\n} }}"
+      },
+      "id": "respond-1",
+      "name": "回傳結果",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "訂單 Webhook": {
+      "main": [
+        [
+          {
+            "node": "處理訂單資料",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "處理訂單資料": {
+      "main": [
+        [
+          {
+            "node": "呼叫訂單 API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "呼叫訂單 API": {
+      "main": [
+        [
+          {
+            "node": "發送通知",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "發送通知": {
+      "main": [
+        [
+          {
+            "node": "回傳結果",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "timezone": "Asia/Taipei"
+  }
+}

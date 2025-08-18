@@ -1,0 +1,641 @@
+/**
+ * TW_Zapier 動畫樣式庫
+ * 包含所有自定義動畫和轉場效果
+ * 整合 GSAP 和 Lenis 平滑滾動
+ */
+
+/* ===== GSAP 和 Lenis 整合樣式 ===== */
+
+/* 平滑滾動容器 */
+html.lenis {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* GPU 加速優化 */
+.animate-gpu {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Hero 背景粒子 */
+.hero-particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  will-change: transform, opacity;
+}
+
+/* Hero 背景裝飾優化 */
+.hero-decoration {
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* CTA 按鈕光澤效果 */
+.cta-button {
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0);
+}
+
+.cta-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.cta-button:hover::before {
+  left: 100%;
+}
+
+/* 滾動進度指示器 */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: rgba(134, 115, 94, 0.1);
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.scroll-progress::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #86735E, #C2474A, #667539);
+  width: 0%;
+  transition: width 0.1s ease;
+}
+
+/* ===== 基礎動畫 ===== */
+
+/* 淡入動畫 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 淡入上升動畫 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 淡入下降動畫 */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 從左滑入動畫 */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 從右滑入動畫 */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* 縮放動畫 */
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* 旋轉淡入動畫 */
+@keyframes rotateIn {
+  from {
+    opacity: 0;
+    transform: rotate(-10deg) scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+/* ===== 特殊效果動畫 ===== */
+
+/* 溫和彈跳動畫 */
+@keyframes bounceGentle {
+  0%, 100% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(-8px);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+/* 溫和脈衝動畫 */
+@keyframes pulseSoft {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+/* 搖擺動畫 */
+@keyframes wiggle {
+  0%, 7% {
+    transform: rotateZ(0);
+  }
+  15% {
+    transform: rotateZ(-15deg);
+  }
+  20% {
+    transform: rotateZ(10deg);
+  }
+  25% {
+    transform: rotateZ(-10deg);
+  }
+  30% {
+    transform: rotateZ(6deg);
+  }
+  35% {
+    transform: rotateZ(-4deg);
+  }
+  40%, 100% {
+    transform: rotateZ(0);
+  }
+}
+
+/* 數字計數器動畫 */
+@keyframes counterUp {
+  from {
+    transform: translateY(20px) scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-5px) scale(1.1);
+    opacity: 0.8;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* 打字機效果 */
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* 游標閃爍 */
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* ===== 載入動畫 ===== */
+
+/* 旋轉載入 */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 點點載入 */
+@keyframes dotPulse {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* 波浪載入 */
+@keyframes wave {
+  0%, 60%, 100% {
+    transform: initial;
+  }
+  30% {
+    transform: translateY(-15px);
+  }
+}
+
+/* ===== 互動動畫 ===== */
+
+/* 按鈕點擊波紋效果 */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* 懸停放大效果 */
+@keyframes hoverGrow {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+/* 懸停陰影效果 */
+@keyframes hoverShadow {
+  from {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  to {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+}
+
+/* ===== 動畫工具類別 ===== */
+
+/* 基礎動畫類別 */
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 0.6s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.5s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.5s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.4s ease-out;
+}
+
+.animate-rotate-in {
+  animation: rotateIn 0.5s ease-out;
+}
+
+/* 特殊效果類別 */
+.animate-bounce-gentle {
+  animation: bounceGentle 2s infinite;
+}
+
+.animate-pulse-soft {
+  animation: pulseSoft 2s infinite;
+}
+
+.animate-wiggle {
+  animation: wiggle 1s ease-in-out;
+}
+
+.animate-counter-up {
+  animation: counterUp 0.8s ease-out;
+}
+
+/* 載入動畫類別 */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-dot-pulse {
+  animation: dotPulse 1.4s infinite ease-in-out;
+}
+
+.animate-wave {
+  animation: wave 1.2s infinite ease-in-out;
+}
+
+/* 互動動畫類別 */
+.hover-grow {
+  transition: transform 0.3s ease;
+}
+
+.hover-grow:hover {
+  transform: scale(1.05);
+}
+
+.hover-shadow {
+  transition: box-shadow 0.3s ease;
+}
+
+.hover-shadow:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* ===== 延遲動畫 ===== */
+
+.animate-delay-100 {
+  animation-delay: 0.1s;
+}
+
+.animate-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animate-delay-300 {
+  animation-delay: 0.3s;
+}
+
+.animate-delay-500 {
+  animation-delay: 0.5s;
+}
+
+.animate-delay-700 {
+  animation-delay: 0.7s;
+}
+
+.animate-delay-1000 {
+  animation-delay: 1s;
+}
+
+/* ===== 動畫持續時間 ===== */
+
+.animate-duration-fast {
+  animation-duration: 0.3s;
+}
+
+.animate-duration-normal {
+  animation-duration: 0.6s;
+}
+
+.animate-duration-slow {
+  animation-duration: 1s;
+}
+
+.animate-duration-slower {
+  animation-duration: 1.5s;
+}
+
+/* ===== 響應式動畫控制 ===== */
+
+/* 在小螢幕上減少動畫 */
+@media (max-width: 640px) {
+  .animate-fade-in-up,
+  .animate-slide-in-left,
+  .animate-slide-in-right {
+    animation-duration: 0.4s;
+  }
+}
+
+/* 尊重使用者的動畫偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-fade-in-up,
+  .animate-fade-in-down,
+  .animate-slide-in-left,
+  .animate-slide-in-right,
+  .animate-scale-in,
+  .animate-rotate-in,
+  .animate-bounce-gentle,
+  .animate-pulse-soft,
+  .animate-wiggle,
+  .animate-counter-up {
+    animation: none;
+  }
+  
+  .hover-grow:hover {
+    transform: none;
+  }
+}
+
+/* ===== 打字機效果組件 ===== */
+
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid #86735E;
+  white-space: nowrap;
+  animation: typewriter 3s steps(40, end), blink 0.75s step-end infinite;
+}
+
+/* ===== 載入點點效果 ===== */
+
+.loading-dots {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.loading-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #86735E;
+  animation: dotPulse 1.4s infinite ease-in-out;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.loading-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* ===== Hero 專用動畫樣式 ===== */
+
+/* 標題字符動畫 */
+.hero-title-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* 信任指標動畫 */
+.trust-indicator {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+}
+
+.trust-indicator.animated {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 頁面載入狀態 */
+.page-loading .hero-title {
+  opacity: 0;
+}
+
+.page-loading .hero-subtitle {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.page-loading .cta-button {
+  opacity: 0;
+  transform: translateY(40px) scale(0.9);
+}
+
+.page-loading .trust-indicator {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* ===== 響應式動畫優化 ===== */
+
+/* 平板設備優化 */
+@media (max-width: 1024px) {
+  .hero-particle {
+    display: none; /* 在較小設備上隱藏粒子 */
+  }
+
+  .cta-button::before {
+    display: none; /* 簡化按鈕效果 */
+  }
+}
+
+/* 手機設備優化 */
+@media (max-width: 768px) {
+  .hero-decoration {
+    transform: none !important; /* 禁用視差效果 */
+  }
+
+  .animate-bounce-gentle,
+  .animate-pulse-soft {
+    animation: none; /* 禁用複雜動畫 */
+  }
+}
+
+/* ===== 無障礙性增強 ===== */
+
+/* 減少動畫偏好支援 */
+@media (prefers-reduced-motion: reduce) {
+  .hero-particle {
+    display: none;
+  }
+
+  .cta-button::before {
+    display: none;
+  }
+
+  .hero-decoration {
+    transform: none !important;
+  }
+
+  .scroll-progress::before {
+    transition: none;
+  }
+
+  /* 保持基本的淡入效果，但移除複雜動畫 */
+  .animate-bounce-gentle,
+  .animate-pulse-soft,
+  .animate-wiggle {
+    animation: fadeIn 0.3s ease-out;
+  }
+}
+
+/* 高對比度模式支援 */
+@media (prefers-contrast: high) {
+  .hero-particle {
+    background: currentColor !important;
+    opacity: 0.8 !important;
+  }
+
+  .cta-button::before {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.5),
+      transparent
+    );
+  }
+
+  .scroll-progress::before {
+    background: currentColor;
+  }
+}

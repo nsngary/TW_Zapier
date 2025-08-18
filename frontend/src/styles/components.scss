@@ -1,0 +1,403 @@
+/**
+ * 元件樣式
+ */
+
+// ===== 卡片元件 =====
+
+.card {
+  background-color: $white;
+  border: $border-width-thin solid $border-color-light;
+  border-radius: $border-radius-base;
+  box-shadow: $shadow-sm;
+  overflow: hidden;
+
+  &.card-hover {
+    @include hover-lift;
+  }
+
+  .card-header {
+    padding: $spacing-base $spacing-lg;
+    border-bottom: $border-width-thin solid $border-color-light;
+    background-color: $bg-color-secondary;
+    font-weight: $font-weight-semibold;
+  }
+
+  .card-body {
+    padding: $spacing-lg;
+  }
+
+  .card-footer {
+    padding: $spacing-base $spacing-lg;
+    border-top: $border-width-thin solid $border-color-light;
+    background-color: $bg-color-secondary;
+  }
+}
+
+// ===== 按鈕元件 =====
+
+.btn {
+  @include button-base;
+
+  &.btn-primary {
+    @include button-variant($primary-color);
+  }
+
+  &.btn-secondary {
+    @include button-variant($secondary-color);
+  }
+
+  &.btn-success {
+    @include button-variant($success-color);
+  }
+
+  &.btn-warning {
+    @include button-variant($warning-color);
+  }
+
+  &.btn-error {
+    @include button-variant($error-color);
+  }
+
+  &.btn-outline {
+    background-color: transparent;
+    border: $border-width-thin solid $border-color;
+    color: $text-color;
+
+    &:hover:not(:disabled) {
+      background-color: $bg-color-secondary;
+    }
+  }
+
+  &.btn-ghost {
+    background-color: transparent;
+    border: none;
+    color: $primary-color;
+
+    &:hover:not(:disabled) {
+      background-color: rgba($primary-color, 0.1);
+    }
+  }
+
+  &.btn-sm {
+    padding: $spacing-xs $spacing-sm;
+    font-size: $font-size-sm;
+  }
+
+  &.btn-lg {
+    padding: $spacing-base $spacing-xl;
+    font-size: $font-size-lg;
+  }
+
+  &.btn-block {
+    width: 100%;
+  }
+
+  &.btn-loading {
+    position: relative;
+    color: transparent;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 16px;
+      height: 16px;
+      margin: -8px 0 0 -8px;
+      border: 2px solid transparent;
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+// ===== 表單元件 =====
+
+.form-group {
+  margin-bottom: $spacing-base;
+
+  .form-label {
+    display: block;
+    margin-bottom: $spacing-xs;
+    font-weight: $font-weight-medium;
+    color: $text-color;
+  }
+
+  .form-control {
+    @include input-base;
+
+    &.is-invalid {
+      border-color: $error-color;
+      box-shadow: 0 0 0 2px rgba($error-color, 0.2);
+    }
+
+    &.is-valid {
+      border-color: $success-color;
+      box-shadow: 0 0 0 2px rgba($success-color, 0.2);
+    }
+  }
+
+  .form-text {
+    margin-top: $spacing-xs;
+    font-size: $font-size-sm;
+    color: $text-color-tertiary;
+  }
+
+  .form-error {
+    margin-top: $spacing-xs;
+    font-size: $font-size-sm;
+    color: $error-color;
+  }
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+  margin-bottom: $spacing-sm;
+
+  .form-check-input {
+    margin-right: $spacing-sm;
+  }
+
+  .form-check-label {
+    font-size: $font-size-sm;
+    color: $text-color;
+    cursor: pointer;
+  }
+}
+
+// ===== 導航元件 =====
+
+.nav {
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  .nav-item {
+    .nav-link {
+      display: block;
+      padding: $spacing-sm $spacing-base;
+      color: $text-color-secondary;
+      text-decoration: none;
+      transition: color $transition-fast $ease-out;
+
+      &:hover {
+        color: $primary-color;
+      }
+
+      &.active {
+        color: $primary-color;
+        font-weight: $font-weight-medium;
+      }
+    }
+  }
+
+  &.nav-tabs {
+    border-bottom: $border-width-thin solid $border-color-light;
+
+    .nav-item {
+      .nav-link {
+        border: $border-width-thin solid transparent;
+        border-bottom: none;
+        border-radius: $border-radius-base $border-radius-base 0 0;
+
+        &.active {
+          background-color: $white;
+          border-color: $border-color-light;
+          border-bottom-color: $white;
+        }
+      }
+    }
+  }
+
+  &.nav-pills {
+    .nav-item {
+      .nav-link {
+        border-radius: $border-radius-base;
+
+        &.active {
+          background-color: $primary-color;
+          color: $white;
+        }
+      }
+    }
+  }
+}
+
+// ===== 徽章元件 =====
+
+.badge {
+  display: inline-block;
+  padding: $spacing-xs $spacing-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: $border-radius-base;
+
+  &.badge-primary {
+    background-color: $primary-color;
+    color: $white;
+  }
+
+  &.badge-secondary {
+    background-color: $secondary-color;
+    color: $white;
+  }
+
+  &.badge-success {
+    background-color: $success-color;
+    color: $white;
+  }
+
+  &.badge-warning {
+    background-color: $warning-color;
+    color: $white;
+  }
+
+  &.badge-error {
+    background-color: $error-color;
+    color: $white;
+  }
+
+  &.badge-light {
+    background-color: $bg-color-secondary;
+    color: $text-color;
+  }
+
+  &.badge-outline {
+    background-color: transparent;
+    border: $border-width-thin solid currentColor;
+  }
+
+  &.badge-pill {
+    border-radius: $border-radius-full;
+  }
+}
+
+// ===== 警告元件 =====
+
+.alert {
+  padding: $spacing-base;
+  margin-bottom: $spacing-base;
+  border: $border-width-thin solid transparent;
+  border-radius: $border-radius-base;
+
+  &.alert-primary {
+    background-color: rgba($primary-color, 0.1);
+    border-color: rgba($primary-color, 0.2);
+    color: darken($primary-color, 10%);
+  }
+
+  &.alert-success {
+    background-color: rgba($success-color, 0.1);
+    border-color: rgba($success-color, 0.2);
+    color: darken($success-color, 10%);
+  }
+
+  &.alert-warning {
+    background-color: rgba($warning-color, 0.1);
+    border-color: rgba($warning-color, 0.2);
+    color: darken($warning-color, 10%);
+  }
+
+  &.alert-error {
+    background-color: rgba($error-color, 0.1);
+    border-color: rgba($error-color, 0.2);
+    color: darken($error-color, 10%);
+  }
+
+  &.alert-info {
+    background-color: rgba($info-color, 0.1);
+    border-color: rgba($info-color, 0.2);
+    color: darken($info-color, 10%);
+  }
+
+  .alert-title {
+    font-weight: $font-weight-semibold;
+    margin-bottom: $spacing-xs;
+  }
+
+  .alert-close {
+    float: right;
+    background: none;
+    border: none;
+    font-size: $font-size-lg;
+    cursor: pointer;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+// ===== 載入元件 =====
+
+.loading {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid $border-color-light;
+  border-top-color: $primary-color;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba($white, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: $z-index-modal;
+
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid $border-color-light;
+    border-top-color: $primary-color;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+// ===== 骨架屏 =====
+
+.skeleton {
+  @include loading-skeleton;
+
+  &.skeleton-text {
+    height: 16px;
+    margin-bottom: $spacing-xs;
+
+    &:last-child {
+      width: 60%;
+    }
+  }
+
+  &.skeleton-title {
+    height: 24px;
+    width: 40%;
+    margin-bottom: $spacing-base;
+  }
+
+  &.skeleton-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+  }
+
+  &.skeleton-button {
+    width: 80px;
+    height: 32px;
+  }
+}

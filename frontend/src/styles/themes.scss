@@ -1,0 +1,422 @@
+/**
+ * 主題樣式
+ */
+
+// ===== 淺色主題（預設） =====
+
+:root,
+.light {
+  // 主要顏色變數 - Website 設計規範
+  --color-primary: #{$primary-500};
+  --color-primary-hover: #{$primary-600};
+  --color-primary-light: #{$primary-400};
+  --color-primary-dark: #{$primary-700};
+
+  // 次要顏色變數 - Website 設計規範
+  --color-secondary: #{$secondary-color};
+  --color-accent-red: #{$accent-red};
+  --color-accent-orange: #{$accent-orange};
+  --color-accent-tan: #{$accent-tan};
+  --color-accent-amber: #{$accent-amber};
+
+  // 功能顏色變數 - Website 設計規範
+  --color-success: #{$success-color};
+  --color-warning: #{$warning-color};
+  --color-error: #{$error-color};
+  --color-info: #{$info-color};
+
+  // 背景顏色 - Website 設計規範
+  --bg-color: #{$bg-color};
+  --bg-color-secondary: #{$bg-color-secondary};
+  --bg-color-tertiary: #{$bg-color-tertiary};
+
+  // 文字顏色 - 使用中性色系
+  --text-color: #{$neutral-800};
+  --text-color-secondary: #{$neutral-600};
+  --text-color-tertiary: #{$neutral-500};
+  --text-color-disabled: #{$neutral-400};
+
+  // 邊框顏色 - 使用中性色系
+  --border-color: #{$neutral-300};
+  --border-color-light: #{$neutral-200};
+  --border-color-dark: #{$neutral-400};
+
+  // 陰影
+  --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+// ===== 深色主題 =====
+
+.dark {
+  // 主要顏色變數（深色主題下調整）- Website 設計規範
+  --color-primary: #{$primary-300};
+  --color-primary-hover: #{$primary-200};
+  --color-primary-light: #{$primary-100};
+  --color-primary-dark: #{$primary-400};
+
+  // 次要顏色變數 - Website 設計規範
+  --color-secondary: #{$accent-tan};
+  --color-accent-red: #{$accent-red};
+  --color-accent-orange: #{$accent-orange};
+  --color-accent-tan: #{$accent-tan};
+  --color-accent-amber: #{$accent-amber};
+
+  // 功能顏色變數（深色主題調整）- Website 設計規範
+  --color-success: #{$success-color};
+  --color-warning: #{$warning-color};
+  --color-error: #{$error-color};
+  --color-info: #{$info-color};
+
+  // 背景顏色 - 使用深色中性色
+  --bg-color: #{$neutral-900};
+  --bg-color-secondary: #{$neutral-800};
+  --bg-color-tertiary: #{$neutral-700};
+
+  // 文字顏色 - 深色主題文字
+  --text-color: #{$neutral-50};
+  --text-color-secondary: #{$neutral-200};
+  --text-color-tertiary: #{$neutral-400};
+  --text-color-disabled: #{$neutral-500};
+
+  // 邊框顏色 - 深色主題邊框
+  --border-color: #{$neutral-600};
+  --border-color-light: #{$neutral-700};
+  --border-color-dark: #{$neutral-500};
+
+  // 陰影
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  
+  // 深色主題特定樣式
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+  }
+  
+  // 卡片在深色主題下的樣式
+  .card {
+    background-color: var(--bg-color-secondary);
+    border-color: var(--border-color);
+    
+    .card-header {
+      background-color: var(--bg-color-tertiary);
+      border-color: var(--border-color);
+    }
+    
+    .card-footer {
+      background-color: var(--bg-color-tertiary);
+      border-color: var(--border-color);
+    }
+  }
+  
+  // 表單元素在深色主題下的樣式
+  .form-control {
+    background-color: var(--bg-color-secondary);
+    border-color: var(--border-color);
+    color: var(--text-color);
+    
+    &::placeholder {
+      color: var(--text-color-tertiary);
+    }
+    
+    &:focus {
+      background-color: var(--bg-color-secondary);
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(64, 150, 255, 0.2);
+    }
+  }
+  
+  // 按鈕在深色主題下的樣式
+  .btn-outline {
+    border-color: var(--border-color);
+    color: var(--text-color);
+    
+    &:hover:not(:disabled) {
+      background-color: var(--bg-color-tertiary);
+      border-color: var(--border-color-dark);
+    }
+  }
+  
+  // 導航在深色主題下的樣式
+  .nav {
+    .nav-link {
+      color: var(--text-color-secondary);
+      
+      &:hover {
+        color: var(--color-primary);
+      }
+      
+      &.active {
+        color: var(--color-primary);
+      }
+    }
+  }
+  
+  .nav-tabs {
+    border-color: var(--border-color);
+    
+    .nav-link {
+      &.active {
+        background-color: var(--bg-color);
+        border-color: var(--border-color);
+        border-bottom-color: var(--bg-color);
+      }
+    }
+  }
+  
+  // 表格在深色主題下的樣式
+  table {
+    color: var(--text-color);
+    
+    th {
+      background-color: var(--bg-color-tertiary);
+      border-color: var(--border-color);
+    }
+    
+    td {
+      border-color: var(--border-color-light);
+    }
+  }
+  
+  // 警告在深色主題下的樣式
+  .alert {
+    &.alert-primary {
+      background-color: rgba(64, 150, 255, 0.15);
+      border-color: rgba(64, 150, 255, 0.3);
+      color: #4096ff;
+    }
+    
+    &.alert-success {
+      background-color: rgba(115, 209, 61, 0.15);
+      border-color: rgba(115, 209, 61, 0.3);
+      color: #73d13d;
+    }
+    
+    &.alert-warning {
+      background-color: rgba(255, 197, 61, 0.15);
+      border-color: rgba(255, 197, 61, 0.3);
+      color: #ffc53d;
+    }
+    
+    &.alert-error {
+      background-color: rgba(255, 120, 117, 0.15);
+      border-color: rgba(255, 120, 117, 0.3);
+      color: #ff7875;
+    }
+  }
+  
+  // 滾動條在深色主題下的樣式
+  ::-webkit-scrollbar-track {
+    background-color: var(--bg-color-secondary);
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--border-color);
+    
+    &:hover {
+      background-color: var(--border-color-dark);
+    }
+  }
+}
+
+// ===== 自動主題（跟隨系統） =====
+// 注意：由於 SCSS 限制，自動主題需要在 JavaScript 中處理
+
+// ===== 主題切換動畫 =====
+
+.theme-transition {
+  * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease !important;
+  }
+}
+
+// ===== 台灣特有主題樣式 =====
+
+.dark {
+  // 台灣品牌色彩在深色主題下的調整
+  .text-taiwan-red {
+    color: #ff6b6b;
+  }
+  
+  .text-taiwan-blue {
+    color: #4dabf7;
+  }
+  
+  .text-taiwan-green {
+    color: #51cf66;
+  }
+  
+  // 金流服務在深色主題下的樣式
+  .line-pay-theme {
+    .line-pay-card {
+      background-color: var(--bg-color-secondary);
+      border-color: #51cf66;
+      
+      .card-header {
+        background-color: #51cf66;
+      }
+    }
+  }
+  
+  .ecpay-theme {
+    .ecpay-card {
+      background-color: var(--bg-color-secondary);
+      border-color: #4dabf7;
+      
+      .card-header {
+        background-color: #4dabf7;
+      }
+    }
+  }
+  
+  .newebpay-theme {
+    .newebpay-card {
+      background-color: var(--bg-color-secondary);
+      border-color: #ffc53d;
+      
+      .card-header {
+        background-color: #ffc53d;
+        color: var(--text-color);
+      }
+    }
+  }
+  
+  // 政府服務在深色主題下的樣式
+  .gov-theme {
+    .gov-card {
+      background-color: var(--bg-color-secondary);
+      border-color: #4dabf7;
+      
+      .card-header {
+        background-color: #4dabf7;
+      }
+    }
+  }
+  
+  // 台灣節點在深色主題下的樣式
+  .taiwan-node {
+    background-color: var(--bg-color-secondary);
+    border-color: var(--border-color);
+    
+    &::before {
+      background: linear-gradient(90deg, #ff6b6b 0%, #4dabf7 50%, #51cf66 100%);
+    }
+  }
+  
+  // 台灣工作流程在深色主題下的樣式
+  .taiwan-workflow {
+    .workflow-header {
+      background: linear-gradient(135deg, #4dabf7 0%, #4096ff 100%);
+    }
+    
+    .workflow-stats {
+      background-color: var(--bg-color-tertiary);
+      border-color: var(--border-color);
+    }
+  }
+  
+  // 台灣狀態指示器在深色主題下的樣式
+  .taiwan-status {
+    &.status-active {
+      background-color: rgba(115, 209, 61, 0.15);
+      color: #73d13d;
+    }
+    
+    &.status-inactive {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--text-color-tertiary);
+    }
+    
+    &.status-pending {
+      background-color: rgba(255, 197, 61, 0.15);
+      color: #ffc53d;
+    }
+    
+    &.status-error {
+      background-color: rgba(255, 120, 117, 0.15);
+      color: #ff7875;
+    }
+  }
+}
+
+// ===== 高對比主題（無障礙） =====
+
+.high-contrast {
+  // 高對比色彩
+  --color-primary: #0066cc;
+  --color-secondary: #6600cc;
+  --color-success: #008800;
+  --color-warning: #cc6600;
+  --color-error: #cc0000;
+  --color-info: #0066cc;
+  
+  // 高對比背景和文字
+  --bg-color: #ffffff;
+  --bg-color-secondary: #f0f0f0;
+  --bg-color-tertiary: #e0e0e0;
+  
+  --text-color: #000000;
+  --text-color-secondary: #333333;
+  --text-color-tertiary: #666666;
+  --text-color-disabled: #999999;
+  
+  // 高對比邊框
+  --border-color: #000000;
+  --border-color-light: #666666;
+  --border-color-dark: #000000;
+  
+  // 移除陰影以提高對比度
+  .card,
+  .btn,
+  .form-control {
+    box-shadow: none !important;
+  }
+  
+  // 加強邊框
+  .card,
+  .form-control,
+  .btn {
+    border-width: 2px !important;
+  }
+  
+  // 高對比焦點樣式
+  *:focus {
+    outline: 3px solid #0066cc !important;
+    outline-offset: 2px !important;
+  }
+}
+
+// ===== 主題切換器樣式 =====
+
+.theme-switcher {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm;
+  border-radius: $border-radius-base;
+  background-color: var(--bg-color-secondary);
+  border: 1px solid var(--border-color);
+  
+  .theme-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: $border-radius-sm;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: var(--bg-color-tertiary);
+    }
+    
+    &.active {
+      background-color: var(--color-primary);
+      color: white;
+    }
+    
+    .icon {
+      font-size: 16px;
+    }
+  }
+}

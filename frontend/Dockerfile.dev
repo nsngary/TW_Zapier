@@ -1,0 +1,38 @@
+# 台灣在地化流程自動化平台 - 前端開發環境 Dockerfile
+
+FROM node:18-alpine
+
+# 設定工作目錄
+WORKDIR /app
+
+# 安裝系統依賴
+RUN apk add --no-cache \
+    git \
+    curl
+
+# 建立非 root 使用者
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nextjs -u 1001
+
+# 複製 package 檔案
+COPY package*.json ./
+
+# 安裝依賴
+RUN npm ci --only=production=false
+
+# 複製應用程式碼
+COPY . .
+
+# 設定檔案權限
+RUN chown -R nextjs:nodejs /app
+USER nextjs
+
+# 暴露埠號
+EXPOSE 3000
+
+# 健康檢查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3000 || exit 1
+
+# 預設命令 (在 docker-compose.yml 中會被覆蓋)
+CMD ["npm", "run", "dev"]

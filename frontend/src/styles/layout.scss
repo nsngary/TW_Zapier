@@ -1,0 +1,363 @@
+/**
+ * 佈局樣式
+ */
+
+// ===== 容器 =====
+
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 $spacing-base;
+
+  @include respond-to(sm) {
+    max-width: $container-sm;
+  }
+
+  @include respond-to(md) {
+    max-width: $container-md;
+  }
+
+  @include respond-to(lg) {
+    max-width: $container-lg;
+  }
+
+  @include respond-to(xl) {
+    max-width: $container-xl;
+  }
+
+  @include respond-to(2xl) {
+    max-width: $container-2xl;
+  }
+}
+
+.container-fluid {
+  width: 100%;
+  padding: 0 $spacing-base;
+}
+
+// ===== 網格系統 =====
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 (-$spacing-base / 2);
+}
+
+.col {
+  flex: 1;
+  padding: 0 ($spacing-base / 2);
+}
+
+@for $i from 1 through 12 {
+  .col-#{$i} {
+    flex: 0 0 percentage($i / 12);
+    max-width: percentage($i / 12);
+    padding: 0 ($spacing-base / 2);
+  }
+}
+
+// ===== Flexbox 工具 =====
+
+.d-flex {
+  display: flex;
+}
+
+.d-inline-flex {
+  display: inline-flex;
+}
+
+.flex-row {
+  flex-direction: row;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.flex-nowrap {
+  flex-wrap: nowrap;
+}
+
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-around {
+  justify-content: space-around;
+}
+
+.align-start {
+  align-items: flex-start;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.align-end {
+  align-items: flex-end;
+}
+
+.align-stretch {
+  align-items: stretch;
+}
+
+// ===== 間距工具 =====
+
+@each $prop, $abbrev in (margin: m, padding: p) {
+  @each $size, $length in (0: 0, 1: $spacing-xs, 2: $spacing-sm, 3: $spacing-base, 4: $spacing-lg, 5: $spacing-xl) {
+    .#{$abbrev}-#{$size} {
+      #{$prop}: $length;
+    }
+    
+    .#{$abbrev}t-#{$size} {
+      #{$prop}-top: $length;
+    }
+    
+    .#{$abbrev}r-#{$size} {
+      #{$prop}-right: $length;
+    }
+    
+    .#{$abbrev}b-#{$size} {
+      #{$prop}-bottom: $length;
+    }
+    
+    .#{$abbrev}l-#{$size} {
+      #{$prop}-left: $length;
+    }
+    
+    .#{$abbrev}x-#{$size} {
+      #{$prop}-left: $length;
+      #{$prop}-right: $length;
+    }
+    
+    .#{$abbrev}y-#{$size} {
+      #{$prop}-top: $length;
+      #{$prop}-bottom: $length;
+    }
+  }
+}
+
+// ===== 位置工具 =====
+
+.position-static {
+  position: static;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.position-absolute {
+  position: absolute;
+}
+
+.position-fixed {
+  position: fixed;
+}
+
+.position-sticky {
+  position: sticky;
+}
+
+// ===== 顯示工具 =====
+
+.d-none {
+  display: none;
+}
+
+.d-block {
+  display: block;
+}
+
+.d-inline {
+  display: inline;
+}
+
+.d-inline-block {
+  display: inline-block;
+}
+
+// ===== 文字對齊 =====
+
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+// ===== 浮動 =====
+
+.float-left {
+  float: left;
+}
+
+.float-right {
+  float: right;
+}
+
+.float-none {
+  float: none;
+}
+
+.clearfix {
+  @include clearfix;
+}
+
+// ===== 溢出處理 =====
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.overflow-auto {
+  overflow: auto;
+}
+
+.overflow-scroll {
+  overflow: scroll;
+}
+
+.overflow-visible {
+  overflow: visible;
+}
+
+// ===== 寬度和高度 =====
+
+.w-25 {
+  width: 25%;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.w-75 {
+  width: 75%;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.h-25 {
+  height: 25%;
+}
+
+.h-50 {
+  height: 50%;
+}
+
+.h-75 {
+  height: 75%;
+}
+
+.h-100 {
+  height: 100%;
+}
+
+.mw-100 {
+  max-width: 100%;
+}
+
+.mh-100 {
+  max-height: 100%;
+}
+
+// ===== 響應式顯示 =====
+
+@include respond-to(xs) {
+  .d-xs-none {
+    display: none;
+  }
+  
+  .d-xs-block {
+    display: block;
+  }
+  
+  .d-xs-flex {
+    display: flex;
+  }
+}
+
+@include respond-to(sm) {
+  .d-sm-none {
+    display: none;
+  }
+  
+  .d-sm-block {
+    display: block;
+  }
+  
+  .d-sm-flex {
+    display: flex;
+  }
+}
+
+@include respond-to(md) {
+  .d-md-none {
+    display: none;
+  }
+  
+  .d-md-block {
+    display: block;
+  }
+  
+  .d-md-flex {
+    display: flex;
+  }
+}
+
+@include respond-to(lg) {
+  .d-lg-none {
+    display: none;
+  }
+  
+  .d-lg-block {
+    display: block;
+  }
+  
+  .d-lg-flex {
+    display: flex;
+  }
+}
+
+@include respond-to(xl) {
+  .d-xl-none {
+    display: none;
+  }
+  
+  .d-xl-block {
+    display: block;
+  }
+  
+  .d-xl-flex {
+    display: flex;
+  }
+}

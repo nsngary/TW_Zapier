@@ -1,0 +1,30 @@
+# 使用 Node.js 18 Alpine 版本作為基礎映像
+FROM node:18-alpine
+
+# 設定工作目錄
+WORKDIR /app
+
+# 安裝系統依賴
+RUN apk add --no-cache \
+    git \
+    python3 \
+    make \
+    g++
+
+# 複製 package.json 和 package-lock.json
+COPY package*.json ./
+
+# 安裝依賴
+RUN npm ci --only=production=false
+
+# 複製專案檔案
+COPY . .
+
+# 建立 shared 目錄的軟連結
+RUN ln -sf /app/shared /app/shared
+
+# 暴露端口
+EXPOSE 4000
+
+# 開發模式啟動命令
+CMD ["npm", "run", "dev"]

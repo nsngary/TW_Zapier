@@ -1,0 +1,517 @@
+/**
+ * 工具類別樣式
+ */
+
+// ===== 文字工具 =====
+
+.text-xs {
+  font-size: $font-size-xs;
+}
+
+.text-sm {
+  font-size: $font-size-sm;
+}
+
+.text-base {
+  font-size: $font-size-base;
+}
+
+.text-lg {
+  font-size: $font-size-lg;
+}
+
+.text-xl {
+  font-size: $font-size-xl;
+}
+
+.text-2xl {
+  font-size: $font-size-2xl;
+}
+
+.text-3xl {
+  font-size: $font-size-3xl;
+}
+
+.text-4xl {
+  font-size: $font-size-4xl;
+}
+
+.font-light {
+  font-weight: $font-weight-light;
+}
+
+.font-normal {
+  font-weight: $font-weight-normal;
+}
+
+.font-medium {
+  font-weight: $font-weight-medium;
+}
+
+.font-semibold {
+  font-weight: $font-weight-semibold;
+}
+
+.font-bold {
+  font-weight: $font-weight-bold;
+}
+
+.text-primary {
+  color: $primary-color;
+}
+
+.text-secondary {
+  color: $secondary-color;
+}
+
+.text-success {
+  color: $success-color;
+}
+
+.text-warning {
+  color: $warning-color;
+}
+
+.text-error {
+  color: $error-color;
+}
+
+.text-info {
+  color: $info-color;
+}
+
+.text-muted {
+  color: $text-color-tertiary;
+}
+
+.text-disabled {
+  color: $text-color-disabled;
+}
+
+.text-ellipsis {
+  @include text-ellipsis;
+}
+
+.text-clamp-2 {
+  @include text-clamp(2);
+}
+
+.text-clamp-3 {
+  @include text-clamp(3);
+}
+
+// ===== 背景工具 =====
+
+.bg-primary {
+  background-color: $primary-color;
+}
+
+.bg-secondary {
+  background-color: $secondary-color;
+}
+
+.bg-success {
+  background-color: $success-color;
+}
+
+.bg-warning {
+  background-color: $warning-color;
+}
+
+.bg-error {
+  background-color: $error-color;
+}
+
+.bg-info {
+  background-color: $info-color;
+}
+
+.bg-white {
+  background-color: $white;
+}
+
+.bg-gray-50 {
+  background-color: $gray-50;
+}
+
+.bg-gray-100 {
+  background-color: $gray-100;
+}
+
+.bg-gray-200 {
+  background-color: $gray-200;
+}
+
+.bg-transparent {
+  background-color: transparent;
+}
+
+// ===== 邊框工具 =====
+
+.border {
+  border: $border-width-thin solid $border-color;
+}
+
+.border-top {
+  border-top: $border-width-thin solid $border-color;
+}
+
+.border-right {
+  border-right: $border-width-thin solid $border-color;
+}
+
+.border-bottom {
+  border-bottom: $border-width-thin solid $border-color;
+}
+
+.border-left {
+  border-left: $border-width-thin solid $border-color;
+}
+
+.border-none {
+  border: none;
+}
+
+.border-primary {
+  border-color: $primary-color;
+}
+
+.border-secondary {
+  border-color: $secondary-color;
+}
+
+.border-success {
+  border-color: $success-color;
+}
+
+.border-warning {
+  border-color: $warning-color;
+}
+
+.border-error {
+  border-color: $error-color;
+}
+
+.rounded {
+  border-radius: $border-radius-base;
+}
+
+.rounded-sm {
+  border-radius: $border-radius-sm;
+}
+
+.rounded-lg {
+  border-radius: $border-radius-lg;
+}
+
+.rounded-xl {
+  border-radius: $border-radius-xl;
+}
+
+.rounded-2xl {
+  border-radius: $border-radius-2xl;
+}
+
+.rounded-full {
+  border-radius: $border-radius-full;
+}
+
+.rounded-none {
+  border-radius: 0;
+}
+
+// ===== 陰影工具 =====
+
+.shadow-none {
+  box-shadow: none;
+}
+
+.shadow-xs {
+  box-shadow: $shadow-xs;
+}
+
+.shadow-sm {
+  box-shadow: $shadow-sm;
+}
+
+.shadow {
+  box-shadow: $shadow-base;
+}
+
+.shadow-lg {
+  box-shadow: $shadow-lg;
+}
+
+.shadow-xl {
+  box-shadow: $shadow-xl;
+}
+
+.shadow-2xl {
+  box-shadow: $shadow-2xl;
+}
+
+// ===== 透明度工具 =====
+
+.opacity-0 {
+  opacity: 0;
+}
+
+.opacity-25 {
+  opacity: 0.25;
+}
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.opacity-75 {
+  opacity: 0.75;
+}
+
+.opacity-100 {
+  opacity: 1;
+}
+
+// ===== 游標工具 =====
+
+.cursor-auto {
+  cursor: auto;
+}
+
+.cursor-default {
+  cursor: default;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-wait {
+  cursor: wait;
+}
+
+.cursor-text {
+  cursor: text;
+}
+
+.cursor-move {
+  cursor: move;
+}
+
+.cursor-help {
+  cursor: help;
+}
+
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+// ===== 選取工具 =====
+
+.select-none {
+  user-select: none;
+}
+
+.select-text {
+  user-select: text;
+}
+
+.select-all {
+  user-select: all;
+}
+
+.select-auto {
+  user-select: auto;
+}
+
+// ===== 指針事件工具 =====
+
+.pointer-events-none {
+  pointer-events: none;
+}
+
+.pointer-events-auto {
+  pointer-events: auto;
+}
+
+// ===== 可見性工具 =====
+
+.visible {
+  visibility: visible;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+// ===== 過渡動畫工具 =====
+
+.transition {
+  transition: all $transition-base $ease-out;
+}
+
+.transition-colors {
+  transition: color $transition-base $ease-out, background-color $transition-base $ease-out, border-color $transition-base $ease-out;
+}
+
+.transition-opacity {
+  transition: opacity $transition-base $ease-out;
+}
+
+.transition-transform {
+  transition: transform $transition-base $ease-out;
+}
+
+.transition-none {
+  transition: none;
+}
+
+// ===== 變換工具 =====
+
+.transform {
+  transform: translateZ(0);
+}
+
+.scale-0 {
+  transform: scale(0);
+}
+
+.scale-50 {
+  transform: scale(0.5);
+}
+
+.scale-75 {
+  transform: scale(0.75);
+}
+
+.scale-90 {
+  transform: scale(0.9);
+}
+
+.scale-95 {
+  transform: scale(0.95);
+}
+
+.scale-100 {
+  transform: scale(1);
+}
+
+.scale-105 {
+  transform: scale(1.05);
+}
+
+.scale-110 {
+  transform: scale(1.1);
+}
+
+.scale-125 {
+  transform: scale(1.25);
+}
+
+.scale-150 {
+  transform: scale(1.5);
+}
+
+.rotate-0 {
+  transform: rotate(0deg);
+}
+
+.rotate-45 {
+  transform: rotate(45deg);
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.rotate-270 {
+  transform: rotate(270deg);
+}
+
+// ===== 互動工具 =====
+
+.hover-lift {
+  @include hover-lift;
+}
+
+.hover-scale {
+  transition: transform $transition-fast $ease-out;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.hover-opacity {
+  transition: opacity $transition-fast $ease-out;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+// ===== 載入工具 =====
+
+.loading-skeleton {
+  @include loading-skeleton;
+}
+
+.loading-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.loading-spin {
+  animation: spin 1s linear infinite;
+}
+
+.loading-bounce {
+  animation: bounce 1s infinite;
+}
+
+// ===== 滾動條工具 =====
+
+.scrollbar-none {
+  @include hide-scrollbar;
+}
+
+.scrollbar-thin {
+  @include custom-scrollbar(4px);
+}
+
+.scrollbar-default {
+  @include custom-scrollbar;
+}
+
+// ===== 截斷工具 =====
+
+.truncate {
+  @include text-ellipsis;
+}
+
+.line-clamp-1 {
+  @include text-clamp(1);
+}
+
+.line-clamp-2 {
+  @include text-clamp(2);
+}
+
+.line-clamp-3 {
+  @include text-clamp(3);
+}
+
+.line-clamp-4 {
+  @include text-clamp(4);
+}
+
+.line-clamp-5 {
+  @include text-clamp(5);
+}
+
+.line-clamp-6 {
+  @include text-clamp(6);
+}

@@ -1,0 +1,471 @@
+/**
+ * 響應式設計樣式
+ */
+
+// ===== 響應式容器 =====
+
+@include respond-to(xs) {
+  .container {
+    padding: 0 $spacing-sm;
+  }
+  
+  .container-fluid {
+    padding: 0 $spacing-sm;
+  }
+}
+
+// ===== 響應式網格 =====
+
+@include respond-to(xs) {
+  .row {
+    margin: 0 (-$spacing-sm / 2);
+  }
+  
+  .col,
+  [class*="col-"] {
+    padding: 0 ($spacing-sm / 2);
+  }
+  
+  // 小螢幕上所有欄位都變成全寬
+  [class*="col-"] {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+@include respond-to(sm) {
+  @for $i from 1 through 12 {
+    .col-sm-#{$i} {
+      flex: 0 0 percentage($i / 12);
+      max-width: percentage($i / 12);
+    }
+  }
+}
+
+@include respond-to(md) {
+  @for $i from 1 through 12 {
+    .col-md-#{$i} {
+      flex: 0 0 percentage($i / 12);
+      max-width: percentage($i / 12);
+    }
+  }
+}
+
+@include respond-to(lg) {
+  @for $i from 1 through 12 {
+    .col-lg-#{$i} {
+      flex: 0 0 percentage($i / 12);
+      max-width: percentage($i / 12);
+    }
+  }
+}
+
+@include respond-to(xl) {
+  @for $i from 1 through 12 {
+    .col-xl-#{$i} {
+      flex: 0 0 percentage($i / 12);
+      max-width: percentage($i / 12);
+    }
+  }
+}
+
+// ===== 響應式文字 =====
+
+@include respond-to(xs) {
+  .text-xs-center {
+    text-align: center;
+  }
+  
+  .text-xs-left {
+    text-align: left;
+  }
+  
+  .text-xs-right {
+    text-align: right;
+  }
+  
+  // 小螢幕上的文字大小調整
+  h1 {
+    font-size: $font-size-2xl;
+  }
+  
+  h2 {
+    font-size: $font-size-xl;
+  }
+  
+  h3 {
+    font-size: $font-size-lg;
+  }
+}
+
+@include respond-to(sm) {
+  .text-sm-center {
+    text-align: center;
+  }
+  
+  .text-sm-left {
+    text-align: left;
+  }
+  
+  .text-sm-right {
+    text-align: right;
+  }
+}
+
+@include respond-to(md) {
+  .text-md-center {
+    text-align: center;
+  }
+  
+  .text-md-left {
+    text-align: left;
+  }
+  
+  .text-md-right {
+    text-align: right;
+  }
+}
+
+// ===== 響應式間距 =====
+
+@include respond-to(xs) {
+  // 小螢幕上減少間距
+  @each $prop, $abbrev in (margin: m, padding: p) {
+    .#{$abbrev}-xs-0 {
+      #{$prop}: 0;
+    }
+    
+    .#{$abbrev}-xs-1 {
+      #{$prop}: $spacing-xs;
+    }
+    
+    .#{$abbrev}-xs-2 {
+      #{$prop}: $spacing-sm;
+    }
+    
+    .#{$abbrev}-xs-3 {
+      #{$prop}: $spacing-base;
+    }
+  }
+}
+
+// ===== 響應式按鈕 =====
+
+@include respond-to(xs) {
+  .btn {
+    // 小螢幕上按鈕更容易點擊
+    min-height: 44px;
+    padding: $spacing-sm $spacing-base;
+  }
+  
+  .btn-block-xs {
+    width: 100%;
+    display: block;
+  }
+}
+
+// ===== 響應式表單 =====
+
+@include respond-to(xs) {
+  .form-group {
+    margin-bottom: $spacing-sm;
+  }
+  
+  .form-control {
+    // 小螢幕上表單元素更容易操作
+    min-height: 44px;
+    font-size: 16px; // 防止 iOS Safari 縮放
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: $spacing-sm;
+    
+    .form-group {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// ===== 響應式卡片 =====
+
+@include respond-to(xs) {
+  .card {
+    margin-bottom: $spacing-base;
+    border-radius: $border-radius-sm;
+    
+    .card-body {
+      padding: $spacing-base;
+    }
+    
+    .card-header,
+    .card-footer {
+      padding: $spacing-sm $spacing-base;
+    }
+  }
+}
+
+// ===== 響應式導航 =====
+
+@include respond-to(xs) {
+  .nav {
+    flex-direction: column;
+    
+    .nav-item {
+      width: 100%;
+      
+      .nav-link {
+        padding: $spacing-base;
+        border-bottom: $border-width-thin solid $border-color-light;
+      }
+    }
+  }
+  
+  .nav-tabs {
+    .nav-item {
+      .nav-link {
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+      }
+    }
+  }
+}
+
+// ===== 響應式表格 =====
+
+@include respond-to(xs) {
+  .table-responsive-xs {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    
+    table {
+      min-width: 600px;
+    }
+  }
+  
+  // 堆疊式表格（適合小螢幕）
+  .table-stack {
+    thead {
+      display: none;
+    }
+    
+    tbody,
+    tr,
+    td {
+      display: block;
+    }
+    
+    tr {
+      border: $border-width-thin solid $border-color-light;
+      border-radius: $border-radius-base;
+      margin-bottom: $spacing-base;
+      padding: $spacing-base;
+    }
+    
+    td {
+      border: none;
+      padding: $spacing-xs 0;
+      
+      &::before {
+        content: attr(data-label) ': ';
+        font-weight: $font-weight-semibold;
+        color: $text-color-secondary;
+      }
+    }
+  }
+}
+
+// ===== 響應式工具類別 =====
+
+@include respond-to(xs) {
+  .hide-xs {
+    display: none !important;
+  }
+  
+  .show-xs {
+    display: block !important;
+  }
+  
+  .flex-xs-column {
+    flex-direction: column !important;
+  }
+  
+  .flex-xs-row {
+    flex-direction: row !important;
+  }
+  
+  .justify-xs-center {
+    justify-content: center !important;
+  }
+  
+  .align-xs-center {
+    align-items: center !important;
+  }
+}
+
+@include respond-to(sm) {
+  .hide-sm {
+    display: none !important;
+  }
+  
+  .show-sm {
+    display: block !important;
+  }
+}
+
+@include respond-to(md) {
+  .hide-md {
+    display: none !important;
+  }
+  
+  .show-md {
+    display: block !important;
+  }
+}
+
+@include respond-to(lg) {
+  .hide-lg {
+    display: none !important;
+  }
+  
+  .show-lg {
+    display: block !important;
+  }
+}
+
+@include respond-to(xl) {
+  .hide-xl {
+    display: none !important;
+  }
+  
+  .show-xl {
+    display: block !important;
+  }
+}
+
+// ===== 台灣特有響應式調整 =====
+
+@include respond-to(xs) {
+  // 台灣地址選擇器
+  .taiwan-address-selector {
+    .address-row {
+      flex-direction: column;
+      gap: $spacing-sm;
+    }
+  }
+  
+  // 台灣金額顯示
+  .taiwan-amount {
+    &.amount-large {
+      font-size: $font-size-base;
+    }
+  }
+  
+  // 台灣工作流程
+  .taiwan-workflow {
+    .workflow-header {
+      padding: $spacing-base;
+      
+      .workflow-title {
+        font-size: $font-size-lg;
+      }
+    }
+    
+    .workflow-stats {
+      flex-direction: column;
+      gap: $spacing-sm;
+      padding: $spacing-base;
+    }
+  }
+  
+  // 台灣節點
+  .taiwan-node {
+    margin-bottom: $spacing-base;
+    
+    &::before {
+      height: 3px;
+    }
+  }
+}
+
+// ===== 觸控優化 =====
+
+@media (hover: none) and (pointer: coarse) {
+  // 觸控裝置優化
+  .btn,
+  .nav-link,
+  .card.card-hover {
+    // 移除 hover 效果，因為觸控裝置沒有真正的 hover
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+  
+  // 增加觸控目標大小
+  .btn,
+  .form-control,
+  .nav-link {
+    min-height: 44px;
+  }
+  
+  // 觸控友好的間距
+  .nav-item {
+    margin-bottom: $spacing-xs;
+  }
+}
+
+// ===== 高解析度螢幕優化 =====
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  // 高解析度螢幕下的邊框優化
+  .border,
+  .card,
+  .form-control {
+    border-width: 0.5px;
+  }
+}
+
+// ===== 列印樣式 =====
+
+@media print {
+  // 隱藏不需要列印的元素
+  .btn,
+  .nav,
+  .sidebar,
+  .modal,
+  .alert {
+    display: none !important;
+  }
+  
+  // 列印友好的樣式
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+    color: black;
+    background: white;
+  }
+  
+  .card {
+    border: 1pt solid black;
+    box-shadow: none;
+    page-break-inside: avoid;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  
+  // 台灣特有列印樣式
+  .taiwan-amount {
+    font-weight: bold;
+  }
+  
+  .taiwan-status {
+    border: 1pt solid black;
+  }
+}

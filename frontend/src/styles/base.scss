@@ -1,0 +1,315 @@
+/**
+ * 基礎樣式
+ */
+
+// ===== 全域樣式 =====
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  font-weight: $font-weight-normal;
+  line-height: $line-height-normal;
+  color: $text-color;
+  background-color: $bg-color;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ===== 標題樣式 =====
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0 0 $spacing-base 0;
+  font-weight: $font-weight-semibold;
+  line-height: $line-height-tight;
+  color: $text-color;
+}
+
+h1 {
+  font-size: $font-size-4xl;
+}
+
+h2 {
+  font-size: $font-size-3xl;
+}
+
+h3 {
+  font-size: $font-size-2xl;
+}
+
+h4 {
+  font-size: $font-size-xl;
+}
+
+h5 {
+  font-size: $font-size-lg;
+}
+
+h6 {
+  font-size: $font-size-base;
+}
+
+// ===== 段落樣式 =====
+
+p {
+  margin: 0 0 $spacing-base 0;
+  line-height: $line-height-normal;
+}
+
+// ===== 連結樣式 =====
+
+a {
+  color: $primary-color;
+  text-decoration: none;
+  transition: color $transition-fast $ease-out;
+
+  &:hover {
+    color: $primary-light;
+  }
+
+  &:active {
+    color: $primary-dark;
+  }
+
+  &:focus {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+}
+
+// ===== 列表樣式 =====
+
+ul, ol {
+  margin: 0 0 $spacing-base 0;
+  padding-left: $spacing-lg;
+}
+
+li {
+  margin-bottom: $spacing-xs;
+}
+
+// ===== 表格樣式 =====
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+th, td {
+  padding: $spacing-sm $spacing-base;
+  text-align: left;
+  border-bottom: $border-width-thin solid $border-color-light;
+}
+
+th {
+  font-weight: $font-weight-semibold;
+  background-color: $bg-color-secondary;
+}
+
+// ===== 表單元素樣式 =====
+
+input, textarea, select, button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: $spacing-sm $spacing-base;
+  border: $border-width-thin solid $border-color;
+  border-radius: $border-radius-base;
+  background-color: $white;
+  transition: border-color $transition-fast $ease-out;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 2px rgba($primary-color, 0.2);
+  }
+
+  &:disabled {
+    background-color: $bg-color-secondary;
+    color: $text-color-disabled;
+    cursor: not-allowed;
+  }
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+// ===== 按鈕樣式 =====
+
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-sm $spacing-base;
+  border: $border-width-thin solid transparent;
+  border-radius: $border-radius-base;
+  font-weight: $font-weight-medium;
+  text-align: center;
+  cursor: pointer;
+  transition: all $transition-fast $ease-out;
+  user-select: none;
+
+  &:focus {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// ===== 圖片樣式 =====
+
+img {
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+}
+
+// ===== 程式碼樣式 =====
+
+code {
+  font-family: $font-family-code;
+  font-size: 0.875em;
+  padding: 2px 4px;
+  background-color: $bg-color-secondary;
+  border-radius: $border-radius-xs;
+}
+
+pre {
+  font-family: $font-family-code;
+  font-size: $font-size-sm;
+  padding: $spacing-base;
+  background-color: $bg-color-secondary;
+  border-radius: $border-radius-base;
+  overflow-x: auto;
+
+  code {
+    padding: 0;
+    background-color: transparent;
+  }
+}
+
+// ===== 分隔線樣式 =====
+
+hr {
+  margin: $spacing-xl 0;
+  border: none;
+  border-top: $border-width-thin solid $border-color-light;
+}
+
+// ===== 引用樣式 =====
+
+blockquote {
+  margin: $spacing-lg 0;
+  padding: $spacing-base $spacing-lg;
+  border-left: 4px solid $border-color;
+  background-color: $bg-color-secondary;
+  font-style: italic;
+}
+
+// ===== 滾動條樣式 =====
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: $bg-color-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $border-color;
+  border-radius: $border-radius-base;
+
+  &:hover {
+    background-color: $border-color-dark;
+  }
+}
+
+// ===== 選取樣式 =====
+
+::selection {
+  background-color: rgba($primary-color, 0.2);
+  color: $text-color;
+}
+
+::-moz-selection {
+  background-color: rgba($primary-color, 0.2);
+  color: $text-color;
+}
+
+// ===== 焦點樣式 =====
+
+:focus-visible {
+  outline: 2px solid $primary-color;
+  outline-offset: 2px;
+}
+
+// ===== 無障礙樣式 =====
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// ===== 載入動畫 =====
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: translateY(0);
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}

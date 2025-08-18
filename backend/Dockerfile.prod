@@ -1,0 +1,70 @@
+# 台灣在地化流程自動化平台 - 後端生產環境 Dockerfile
+
+# 多階段建置：建置階段
+FROM python:3.11-slim as builder
+
+WORKDIR /app
+
+# 安裝建置依賴
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 複製 requirements 檔案
+COPY requirements.txt .
+
+# 建立虛擬環境並安裝依賴
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# 生產階段
+FROM python:3.11-slim
+
+# 設定環境變數
+ENV PYTHONPATH=/app
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PATH="/opt/venv/bin:$PATH"
+
+# 安裝運行時依賴
+RUN apt-get update && apt-get install -y \
+    libpq5 \
+    curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# 建立非 root 使用者
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+# 從建置階段複製虛擬環境
+COPY --from=builder /opt/venv /opt/venv
+
+# 設定工作目錄
+WORKDIR /app
+
+# 建立必要目錄
+RUN mkdir -p /app/logs /app/static && \
+    chown -R appuser:appuser /app
+
+# 複製應用程式碼
+COPY . .
+
+# 設定檔案權限
+RUN chown -R appuser:appuser /app
+
+# 切換到非 root 使用者
+USER appuser
+
+# 暴露埠號
+EXPOSE 8000
+
+# 健康檢查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+# 生產環境命令
+CMD ["gunicorn", "app.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--access-logfile", "-", "--error-logfile", "-"]

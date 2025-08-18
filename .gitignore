@@ -1,0 +1,247 @@
+# 作業系統相關
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE 和編輯器
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 環境變數和配置
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.local
+# 但保留範例檔案
+!.env.example
+
+# 日誌檔案
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# 前端相關 (Node.js)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.npm
+.eslintcache
+.stylelintcache
+
+# 前端建置輸出
+frontend/dist/
+frontend/build/
+frontend/.nuxt/
+frontend/.next/
+frontend/out/
+website/dist/
+website/build/
+website/.nuxt/
+website/.output/
+website/.next/
+website/out/
+
+# 後端相關 (Python)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Python 虛擬環境
+backend/venv/
+backend/env/
+backend/ENV/
+backend/env.bak/
+backend/venv.bak/
+.venv/
+.env/
+
+# Python 測試和覆蓋率
+.coverage
+.pytest_cache/
+cover/
+htmlcov/
+.tox/
+.nox/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# 資料庫相關
+*.db
+*.sqlite
+*.sqlite3
+database/data/
+database/backups/
+database/dumps/
+
+# Docker 相關
+.dockerignore
+docker-compose.override.yml
+
+# n8n 相關
+n8n-data/
+.n8n/
+
+# 監控和日誌
+logs/
+*.log
+monitoring/data/
+grafana/data/
+prometheus/data/
+
+# 暫存和快取
+.cache/
+.parcel-cache/
+.sass-cache/
+*.tmp
+*.temp
+
+# 備份檔案
+*.bak
+*.backup
+*.old
+*.orig
+
+# 壓縮檔案
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# 測試相關
+.nyc_output/
+coverage/
+test-results/
+playwright-report/
+test-results.xml
+frontend/test-results/
+frontend/playwright-report/
+website/test-results/
+website/playwright-report/
+
+# 部署相關
+deploy/secrets/
+deploy/configs/*.local.*
+kubernetes/secrets/
+
+# 文件建置
+docs/_build/
+docs/.doctrees/
+
+# TypeScript 建置檔案
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# 開發和測試檔案
+*debug*.html
+*debug*.png
+*debug*.jpg
+*test*.png
+*test*.jpg
+*test*.html
+*test*.py
+*backup*.vue
+*backup*.js
+*backup*.ts
+*backup*.py
+demo_*.json
+demo_*.py
+*demo_results*.json
+complete_demo_*.json
+complete_demo_*.py
+webhook_test.py
+test-edge-types.html
+debug-workflow-test.html
+
+# 分析和報告檔案
+*analysis*.png
+*analysis*.jpg
+*analysis*.json
+*analysis*.md
+*report*.png
+*report*.jpg
+*report*.md
+*claude*.md
+*gpt*.md
+*ai*.md
+*分析*.md
+*報告*.md
+*技術架構*.md
+*深度分析*.md
+*開發規劃*.md
+*規劃*.md
+台灣流程自動化平台*.md
+
+# 設計檔案
+*.mdj
+*.sketch
+*.fig
+*.xd
+
+# 大型媒體檔案（保留 public/images 中的資源）
+/*.mp4
+/*.webm
+/*.mov
+/*.avi
+aiworkflowshomepage.*
+*demo*.mp4
+*demo*.webm
+
+# 截圖和臨時圖片（根目錄和 website 目錄）
+/*.png
+/*.jpg
+/*.jpeg
+/website/*.png
+/website/*.jpg
+/website/*.jpeg
+our_*.png
+fixed_*.png
+final_*.png
+zapier_*.png
+debug_*.png
+
+# 其他
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl

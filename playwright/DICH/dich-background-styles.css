@@ -1,0 +1,22 @@
+:root{ --brand-primary:#86735E; --brand-accent:#C2474A; --brand-support:#667539; --brand-soft:#FFDFC4; }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:var(--brand-soft); color:#111}
+.content{min-height:400vh}
+.panel{min-height:100vh; display:grid; place-items:center}
+.panel h1{margin:0}
+
+/* reduced motion: disable heavy transitions */
+@media (prefers-reduced-motion: reduce){
+  .bg-layer{transition:none !important}
+}
+
+/* background layer */
+.bg-layer{position:fixed; inset:0; z-index:-1; pointer-events:none; background:var(--brand-soft)}
+
+/* 以 JS 動態插值顏色，移除多餘主題類別（保留相容性可選）*/
+.theme-intro{background:var(--brand-soft)}
+.theme-accent{background:var(--brand-accent)}
+.theme-support{background:var(--brand-support)}
+.theme-primary{background:var(--brand-primary)}
+
