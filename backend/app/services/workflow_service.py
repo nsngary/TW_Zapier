@@ -11,7 +11,7 @@ import uuid
 from app.core.exceptions import ResourceNotFoundError, WorkflowExecutionError
 from app.models.workflow import Workflow, WorkflowExecution, WorkflowTemplate
 from app.models.user import User
-from app.schemas.workflow import WorkflowCreate, WorkflowUpdate, ExecutionStatus
+from app.schemas.workflow import WorkflowCreate, WorkflowUpdate, WorkflowSave, ExecutionStatus
 from app.services.n8n_service import N8nService
 
 logger = logging.getLogger("app.services.workflow")
@@ -145,7 +145,58 @@ class WorkflowService:
             self.db.rollback()
             logger.error(f"更新工作流失敗: {str(e)}")
             raise
-    
+
+    async def save_workflow(self, workflow_id: str, user_id: str, workflow_data: WorkflowSave) -> Workflow:
+        """
+        儲存工作流（專門用於編輯器儲存）
+        """
+        try:
+            # 驗證用戶權限
+            uuid_workflow_id = uuid.UUID(workflow_id)
+            uuid_user_id = uuid.UUID(user_id)
+
+            db_workflow = self.db.query(Workflow).filter(
+                Workflow.id == uuid_workflow_id,
+                Workflow.user_id == uuid_user_id
+            ).first()
+
+            if not db_workflow:
+                raise ResourceNotFoundError("工作流", workflow_id)
+
+            # 更新工作流內容
+            db_workflow.nodes = workflow_data.nodes
+            db_workflow.edges = workflow_data.edges
+
+            # 更新設定，包含 viewport
+            settings = workflow_data.settings or {}
+            if workflow_data.viewport:
+                settings['viewport'] = workflow_data.viewport
+            db_workflow.settings = settings
+
+            if workflow_data.name:
+                db_workflow.name = workflow_data.name
+            if workflow_data.description:
+                db_workflow.description = workflow_data.description
+
+            # 如果是第一次儲存且有內容，將狀態改為 ACTIVE
+            if (db_workflow.status == "draft" and
+                (workflow_data.nodes or workflow_data.edges)):
+                db_workflow.status = "active"
+
+            db_workflow.updated_at = datetime.utcnow()
+            self.db.commit()
+            self.db.refresh(db_workflow)
+
+            logger.info(f"儲存工作流成功: {workflow_id}, 節點數: {len(workflow_data.nodes)}, 連線數: {len(workflow_data.edges)}")
+            return db_workflow
+
+        except ResourceNotFoundError:
+            raise
+        except Exception as e:
+            self.db.rollback()
+            logger.error(f"儲存工作流失敗: {str(e)}")
+            raise
+
     async def delete_workflow(self, workflow_id: str) -> bool:
         """
         刪除工作流

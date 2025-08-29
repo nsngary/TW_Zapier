@@ -41,14 +41,16 @@
             <li>
               <details data-testid="nav-dropdown">
                 <summary class="Dropdown-module_summary_Xbsnp-Dg" data-testid="nav-dropdown-summary">
-                  <span>產品</span><span class="Dropdown-module_indicator_oQwHfinM"><svg width="16" height="16"
+                  <span>產品</span>
+                  <span class="Dropdown-module_indicator_oQwHfinM">
+                    <svg width="16" height="16"
                       viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" size="16"
                       class="zapier-zinnia-icons__icon__8f1EW1A1" aria-hidden="false" role="img"
                       data-name="arrowSmallDown" data-block="false" data-pointer-events="true" data-animate-fill="true"
                       style="--color:inherit">
-                      <path d="M12 17.2999L19 11.4399V8.81995L12 14.6999L5 8.81995V11.4399L12 17.2999Z"
-                        fill="currentColor"></path>
-                    </svg></span>
+                      <path d="M12 17.2999L19 11.4399V8.81995L12 14.6999L5 8.81995V11.4399L12 17.2999Z" fill="currentColor"></path>
+                    </svg>
+                  </span>
                 </summary>
                 <!-- 下拉選單內容 -->
                 <div class="Submenu-module_root_BoW-D-ZP">

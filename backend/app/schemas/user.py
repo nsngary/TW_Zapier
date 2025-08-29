@@ -3,7 +3,7 @@
 """
 
 from datetime import datetime
-from pydantic import BaseModel, EmailStr, Field, validator
+from pydantic import BaseModel, Field, validator
 from typing import Optional, List
 import uuid
 import re
@@ -12,7 +12,7 @@ import re
 class UserBase(BaseModel):
     """使用者基礎模型 - 符合前端需求"""
     name: str = Field(..., min_length=2, max_length=100, description="使用者姓名")
-    email: EmailStr = Field(..., description="電子郵件地址")
+    email: str = Field(..., description="電子郵件地址")
     phone: Optional[str] = Field(None, description="手機號碼")
 
     @validator('phone')
@@ -42,7 +42,7 @@ class UserCreate(UserBase):
 
 class UserUpdate(BaseModel):
     """更新使用者模型"""
-    email: Optional[EmailStr] = Field(None, description="電子郵件")
+    email: Optional[str] = Field(None, description="電子郵件")
     full_name: Optional[str] = Field(None, min_length=1, max_length=100, description="全名")
     is_active: Optional[bool] = Field(None, description="是否啟用")
     is_superuser: Optional[bool] = Field(None, description="是否為超級使用者")
@@ -73,7 +73,7 @@ class UserInDB(UserBase):
 
 class LoginRequest(BaseModel):
     """登入請求 schema - 符合前端格式"""
-    email: EmailStr = Field(..., description="電子郵件地址")
+    email: str = Field(..., description="電子郵件地址")
     password: str = Field(..., min_length=1, description="密碼")
 
 

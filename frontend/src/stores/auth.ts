@@ -19,7 +19,9 @@ export const useAuthStore = defineStore('auth', () => {
   // ===== 狀態 =====
   const accessToken = ref<string | null>(localStorage.getItem('access_token'))
   const refreshToken = ref<string | null>(localStorage.getItem('refresh_token'))
-  const tokenExpiry = ref<number | null>(null)
+  const tokenExpiry = ref<number | null>(
+    localStorage.getItem('token_expiry') ? parseInt(localStorage.getItem('token_expiry')!) : null
+  )
   const loading = ref<LoadingState>('idle')
   const error = ref<StandardError | null>(null)
 
@@ -60,6 +62,20 @@ export const useAuthStore = defineStore('auth', () => {
       loading.value = 'error'
       throw err
     }
+  }
+
+  /**
+   * 簡單登入（用於測試）
+   */
+  const simpleLogin = (username: string): void => {
+    // 創建一個假的 token（使用 base64 編碼避免中文字符問題）
+    const encodedUsername = btoa(encodeURIComponent(username))
+    const fakeToken = `fake-token-${encodedUsername}-${Date.now()}`
+    const expiresIn = 24 * 60 * 60 // 24 小時
+
+    setTokens(fakeToken, fakeToken, expiresIn)
+    loading.value = 'success'
+    error.value = null
   }
 
   /**
@@ -289,6 +305,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     // 動作
     login,
+    simpleLogin,
     register,
     logout,
     refreshTokens,

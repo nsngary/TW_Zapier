@@ -2,14 +2,36 @@
 工作流相關的 SQLAlchemy 模型
 """
 
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, ForeignKey, Float, Enum
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, Text, ForeignKey, Float, Enum, TypeDecorator
 from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import uuid
 import enum
+import json
 
 from app.core.database import Base
+
+
+class FormattedJSONB(TypeDecorator):
+    """
+    自定義 JSONB 類型，支援格式化儲存
+    """
+    impl = JSONB
+    cache_ok = True
+
+    def process_bind_param(self, value, dialect):
+        """儲存時格式化 JSON"""
+        if value is not None:
+            # 將 Python 物件轉換為格式化的 JSON 字串，然後再轉回物件
+            # 這樣可以確保儲存的 JSON 是格式化的
+            formatted_json = json.dumps(value, indent=2, ensure_ascii=False)
+            return json.loads(formatted_json)
+        return value
+
+    def process_result_value(self, value, dialect):
+        """讀取時保持原樣"""
+        return value
 
 
 class WorkflowStatus(enum.Enum):
@@ -49,10 +71,10 @@ class Workflow(Base):
     category = Column(String(50), nullable=True, index=True)
     tags = Column(ARRAY(String), nullable=True)
     
-    # 工作流定義
-    nodes = Column(JSONB, nullable=False, default=list)
-    edges = Column(JSONB, nullable=False, default=list)
-    settings = Column(JSONB, nullable=True, default=dict)
+    # 工作流定義（使用格式化 JSONB）
+    nodes = Column(FormattedJSONB, nullable=False, default=list)
+    edges = Column(FormattedJSONB, nullable=False, default=list)
+    settings = Column(FormattedJSONB, nullable=True, default=dict)
     
     # 版本控制
     version = Column(Integer, default=1, nullable=False)
@@ -95,10 +117,10 @@ class WorkflowVersion(Base):
     version_name = Column(String(100), nullable=True)
     changelog = Column(Text, nullable=True)
     
-    # 版本內容
-    nodes = Column(JSONB, nullable=False)
-    edges = Column(JSONB, nullable=False)
-    settings = Column(JSONB, nullable=True)
+    # 版本內容（使用格式化 JSONB）
+    nodes = Column(FormattedJSONB, nullable=False)
+    edges = Column(FormattedJSONB, nullable=False)
+    settings = Column(FormattedJSONB, nullable=True)
     
     # 版本狀態
     is_current = Column(Boolean, default=False, nullable=False)
@@ -174,11 +196,11 @@ class WorkflowTemplate(Base):
     category = Column(String(50), nullable=False, index=True)
     tags = Column(ARRAY(String), nullable=True)
     
-    # 模板內容
+    # 模板內容（使用格式化 JSONB）
     thumbnail_url = Column(String(500), nullable=True)
-    nodes = Column(JSONB, nullable=False)
-    edges = Column(JSONB, nullable=False)
-    settings = Column(JSONB, nullable=True, default=dict)
+    nodes = Column(FormattedJSONB, nullable=False)
+    edges = Column(FormattedJSONB, nullable=False)
+    settings = Column(FormattedJSONB, nullable=True, default=dict)
     
     # 模板元資料
     author_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)

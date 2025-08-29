@@ -3,9 +3,20 @@
   <div class="vue-flow-editor">
     <!-- 新的 Header -->
     <EditorHeader
+      :workflow-name="workflowDatabase.currentWorkflowName.value"
+      :has-unsaved-changes="workflowDatabase.hasUnsavedChanges.value"
+      :can-undo="canUndo"
+      :can-redo="canRedo"
+      :can-run-workflow="canRunWorkflow"
+      :save-status="saveStatus"
+      :connection-status="connectionStatus"
+      :has-validation-errors="workflowValidation.hasErrors.value"
+      :is-validated="workflowValidation.isValidated.value"
       @new-workflow="handleNewWorkflow"
       @open-workflow="handleOpenWorkflow"
       @save-workflow="handleSaveWorkflow"
+      @save-as-workflow="handleSaveAsWorkflow"
+      @import-workflow="handleImportWorkflow"
       @export-workflow="exportWorkflow"
       @undo="handleUndo"
       @redo="handleRedo"
@@ -14,7 +25,8 @@
       @fit-view="fitView"
       @zoom-in="handleZoomIn"
       @zoom-out="handleZoomOut"
-      @run-workflow="runTests"
+      @run-workflow="handleExecuteWorkflow"
+      @validate-workflow="validateCurrentWorkflow"
     />
 
     <!-- 主編輯區域 -->
@@ -145,7 +157,7 @@
               draggable="true"
               @dragstart="handleDragStart($event, 'email')"
             >
-              <span class="node-icon">
+              <span class="node-icozn">
                 <el-icon><Message /></el-icon>
               </span>
               <span class="node-label">電子郵件</span>
@@ -414,7 +426,57 @@
           </el-icon>
         </div>
         <div class="panel-content">
-          <h3>屬性設定</h3>
+          <div class="panel-header-content">
+            <h3>屬性設定</h3>
+            <div class="panel-actions">
+              <el-button
+                @click="validateCurrentWorkflow"
+                :loading="workflowValidation.isValidating.value"
+                size="small"
+                type="primary"
+              >
+                驗證工作流
+              </el-button>
+            </div>
+          </div>
+
+          <!-- 驗證結果顯示 -->
+          <div v-if="workflowValidation.validationErrors.value.length > 0" class="validation-results">
+            <div class="validation-header">
+              <h4>
+                <el-icon><Warning /></el-icon>
+                驗證結果
+              </h4>
+            </div>
+
+            <div class="validation-errors">
+              <div
+                v-for="error in workflowValidation.validationErrors.value"
+                :key="error.id"
+                :class="['validation-item', `validation-${error.severity}`]"
+              >
+                <div class="validation-icon">
+                  <el-icon v-if="error.severity === 'error'"><CircleClose /></el-icon>
+                  <el-icon v-else><Warning /></el-icon>
+                </div>
+                <div class="validation-content">
+                  <div class="validation-message">{{ error.message }}</div>
+                  <div v-if="error.nodeId" class="validation-location">
+                    節點: {{ getNodeLabel(error.nodeId) }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="validation-summary">
+              <span v-if="workflowValidation.errorCount.value > 0" class="error-count">
+                {{ workflowValidation.errorCount.value }} 個錯誤
+              </span>
+              <span v-if="workflowValidation.warningCount.value > 0" class="warning-count">
+                {{ workflowValidation.warningCount.value }} 個警告
+              </span>
+            </div>
+          </div>
         <div v-if="selectedNode" class="node-properties">
           <h4>{{ selectedNode.data?.label || selectedNode.id }}</h4>
           
@@ -533,7 +595,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, nextTick, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, nextTick, onMounted, onUnmounted, watch, h } from 'vue'
 import {
   VueFlow,
   useVueFlow,
@@ -546,7 +608,7 @@ import {
 import { Background } from '@vue-flow/background'
 import { MiniMap } from '@vue-flow/minimap'
 import { Controls } from '@vue-flow/controls'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import {
   Menu,
   Setting,
@@ -557,13 +619,24 @@ import {
   OfficeBuilding,
   ChatDotRound,
   Message,
-  Promotion
+  Promotion,
+  Warning,
+  CircleClose
 } from '@element-plus/icons-vue'
 import EditorHeader from '../layout/EditorHeader.vue'
 import TaiwanFlowNode from './TaiwanFlowNode.vue'
 import TriggerNodeEditor from './editors/TriggerNodeEditor.vue'
 import LinePayNodeEditor from './editors/LinePayNodeEditor.vue'
 import NotificationNodeEditor from './editors/NotificationNodeEditor.vue'
+import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router'
+import { useWorkflowManager } from '@/composables/useWorkflowManager'
+import { useWorkflowDatabase } from '@/composables/useWorkflowDatabase'
+import { useWorkflowImportExport } from '@/composables/useWorkflowImportExport'
+import { useWorkflowValidation } from '@/composables/useWorkflowValidation'
+
+// Router 實例
+const router = useRouter()
+const route = useRoute()
 
 // Vue Flow 實例
 const {
@@ -581,6 +654,12 @@ const {
   zoomOut: vueFlowZoomOut
 } = useVueFlow()
 
+// 工作流管理 composables
+const workflowManager = useWorkflowManager()
+const workflowDatabase = useWorkflowDatabase()
+const workflowImportExport = useWorkflowImportExport()
+const workflowValidation = useWorkflowValidation()
+
 // 響應式資料
 const nodes = ref<Node[]>([])
 const edges = ref<Edge[]>([])
@@ -591,6 +670,18 @@ const hoveredEdgeId = ref<string | null>(null)
 // 面板展開狀態
 const isLeftPanelExpanded = ref(false)
 const isRightPanelExpanded = ref(false)
+
+// 新增狀態
+const saveStatus = ref<'saving' | 'saved' | 'error' | null>(null)
+const connectionStatus = ref<'connected' | 'disconnected' | 'connecting' | null>('connected')
+
+// 載入狀態標誌，用於暫時停用 watch 監聽器
+const isLoadingWorkflow = ref(false)
+
+// 計算屬性
+const canUndo = computed(() => currentHistoryIndex.value > 0)
+const canRedo = computed(() => currentHistoryIndex.value < historyStack.value.length - 1)
+const canRunWorkflow = computed(() => nodes.value.length > 0 && !workflowValidation.hasErrors.value)
 
 
 
@@ -621,9 +712,7 @@ const selectedEdge = computed(() => {
   return findEdge(selectedEdgeId.value)
 })
 
-const canUndo = computed(() => {
-  return currentHistoryIndex.value > 0
-})
+
 
 // 節點類型映射
 const nodeTypeMap: Record<string, string> = {
@@ -675,6 +764,44 @@ const getNodeLabel = (nodeId: string): string => {
   return node?.data?.label || nodeId
 }
 
+// ===== 新增的事件處理函數 =====
+
+const handleSaveAsWorkflow = async () => {
+  try {
+    // 提示輸入新工作流名稱
+    const { value: workflowName } = await ElMessageBox.prompt(
+      '請輸入新工作流名稱',
+      '另存新檔',
+      {
+        confirmButtonText: '儲存',
+        cancelButtonText: '取消',
+        inputPattern: /\S+/,
+        inputErrorMessage: '工作流名稱不能為空'
+      }
+    )
+
+    saveStatus.value = 'saving'
+
+    // 建立新工作流（另存新檔）
+    await workflowDatabase.createWorkflow(
+      workflowName,
+      '另存的工作流',
+      nodes.value,
+      edges.value
+    )
+
+    saveStatus.value = 'saved'
+    setTimeout(() => { saveStatus.value = null }, 2000)
+
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('另存新檔失敗:', error)
+    }
+    saveStatus.value = 'error'
+    setTimeout(() => { saveStatus.value = null }, 3000)
+  }
+}
+
 const getNodeColor = (node: Node): string => {
   const type = node.data?.nodeType
   // 使用專案色卡配色，與主畫布節點顏色保持一致
@@ -714,21 +841,85 @@ const handleDragEnter = (event: DragEvent) => {
   event.preventDefault()
 }
 
-const handleDrop = (event: DragEvent) => {
+const handleDrop = async (event: DragEvent) => {
   event.preventDefault()
-  
+
   if (!event.dataTransfer) return
-  
+
+  // 檢查是否是檔案拖拉
+  const files = event.dataTransfer.files
+  if (files && files.length > 0) {
+    const file = files[0]
+
+    // 檢查檔案類型
+    if (!file.name.toLowerCase().endsWith('.json')) {
+      ElMessage.error('只支援 JSON 格式的工作流檔案')
+      return
+    }
+
+    try {
+      // 檢查是否有未儲存的變更
+      if (workflowManager.hasUnsavedChanges.value) {
+        await ElMessageBox.confirm(
+          '目前工作流有未儲存的變更，匯入新工作流將會遺失這些變更。確定要繼續嗎？',
+          '確認匯入',
+          {
+            confirmButtonText: '繼續匯入',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }
+        )
+      }
+
+      // 匯入工作流
+      const workflowData = await workflowImportExport.importWorkflowFromJSON(file)
+
+      if (workflowData) {
+        // 清空當前工作流
+        nodes.value = []
+        edges.value = []
+
+        // 載入匯入的工作流
+        nodes.value = workflowData.nodes
+        edges.value = workflowData.edges
+
+        if (workflowData.viewport) {
+          setViewport(workflowData.viewport)
+        }
+
+        // 清空選擇狀態
+        selectedNodeId.value = null
+        selectedEdgeId.value = null
+
+        // 清空歷史記錄並保存當前狀態
+        historyStack.value = []
+        currentHistoryIndex.value = -1
+        saveToHistory()
+
+        // 標記為有未儲存變更
+        workflowManager.hasUnsavedChanges.value = true
+      }
+
+    } catch (error) {
+      if (error !== 'cancel') {
+        console.error('拖拉匯入工作流失敗:', error)
+        ElMessage.error('匯入工作流失敗')
+      }
+    }
+    return
+  }
+
+  // 處理節點拖拉
   try {
     const data = JSON.parse(event.dataTransfer.getData('application/json'))
-    
+
     if (data.type === 'new-node') {
       // 將螢幕座標轉換為 Vue Flow 座標
       const position = project({
         x: event.clientX - 75, // 節點寬度的一半
         y: event.clientY - 40   // 節點高度的一半
       })
-      
+
       addNewNode(data.nodeType, position)
     }
   } catch (error) {
@@ -796,18 +987,40 @@ const addNewNode = (nodeType: string, position: { x: number; y: number }) => {
 // 事件處理
 const handleNodesChange = (changes: any[]) => {
   // 處理節點變更
+  let hasPositionChanges = false
+
   changes.forEach((change) => {
-    if (change.type === 'position' && change.dragging === false) {
-      // 節點位置更新完成
+    if (change.type === 'position') {
+      // 節點位置更新
       const node = nodes.value.find(n => n.id === change.id)
-      if (node) {
-        node.position = change.position
+      if (node && change.position) {
+        console.log(`更新節點 ${change.id} 位置:`, change.position)
+        node.position = { ...change.position }
+
+        // 標記有位置變更
+        hasPositionChanges = true
+
+        // 如果拖動完成，標記為有未儲存變更
+        if (change.dragging === false) {
+          console.log(`節點 ${change.id} 拖動完成，位置: (${change.position.x}, ${change.position.y})`)
+        }
       }
     } else if (change.type === 'remove') {
       // 節點被刪除
       nodes.value = nodes.value.filter(n => n.id !== change.id)
+      workflowDatabase.hasUnsavedChanges.value = true
+      console.log(`節點 ${change.id} 被刪除`)
+    } else if (change.type === 'select') {
+      // 節點選擇狀態變更 - 這裡不需要更新 nodes 陣列，Vue Flow 會自動處理
+      console.log(`節點 ${change.id} 選擇狀態: ${change.selected}`)
     }
   })
+
+  // 如果有位置變更，標記為有未儲存變更
+  if (hasPositionChanges) {
+    workflowDatabase.hasUnsavedChanges.value = true
+    console.log('✅ 標記為有未儲存變更')
+  }
 }
 
 const handleEdgesChange = (changes: any[]) => {
@@ -1197,30 +1410,60 @@ const clearCanvas = () => {
   ElMessage.info('畫布已清空')
 }
 
-const exportWorkflow = () => {
-  const workflow = {
-    name: '台灣 Vue Flow 工作流',
-    nodes: nodes.value,
-    edges: edges.value,
-    viewport: getViewport(),
-    createdAt: new Date().toISOString()
+const exportWorkflow = async () => {
+  try {
+    // 先驗證工作流
+    const validationResult = await workflowValidation.validateWorkflow(nodes.value, edges.value)
+
+    if (validationResult.criticalErrors.length > 0) {
+      const { action } = await ElMessageBox.confirm(
+        `工作流包含 ${validationResult.criticalErrors.length} 個錯誤，仍要匯出嗎？`,
+        '確認匯出',
+        {
+          confirmButtonText: '仍要匯出',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      )
+
+      if (action !== 'confirm') return
+    }
+
+    // 提示輸入工作流名稱
+    const { value: workflowName } = await ElMessageBox.prompt(
+      '請輸入匯出的工作流名稱',
+      '匯出工作流',
+      {
+        confirmButtonText: '匯出',
+        cancelButtonText: '取消',
+        inputValue: workflowManager.currentWorkflowName.value || `工作流 ${new Date().toLocaleString()}`,
+        inputValidator: (value) => {
+          if (!value || !value.trim()) {
+            return '請輸入工作流名稱'
+          }
+          return true
+        }
+      }
+    )
+
+    // 匯出工作流
+    const success = await workflowImportExport.exportWorkflowToJSON(
+      workflowName,
+      nodes.value,
+      edges.value,
+      getViewport()
+    )
+
+    if (success && validationResult.warnings.length > 0) {
+      ElMessage.warning(`工作流已匯出，但包含 ${validationResult.warnings.length} 個警告`)
+    }
+
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('匯出工作流失敗:', error)
+      ElMessage.error('匯出工作流失敗')
+    }
   }
-  
-  const blob = new Blob([JSON.stringify(workflow, null, 2)], {
-    type: 'application/json'
-  })
-  
-  const url = URL.createObjectURL(blob)
-  const link = document.createElement('a')
-  link.href = url
-  link.download = `taiwan-vue-flow-workflow-${Date.now()}.json`
-  
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  
-  URL.revokeObjectURL(url)
-  ElMessage.success('工作流已匯出')
 }
 
 const fitView = () => {
@@ -1229,19 +1472,350 @@ const fitView = () => {
 
 // ===== Header 事件處理函數 =====
 
-const handleNewWorkflow = () => {
-  clearCanvas()
-  ElMessage.success('已建立新的工作流')
+const handleNewWorkflow = async () => {
+  try {
+    // 如果有未儲存的變更，提示用戶
+    if (workflowDatabase.hasUnsavedChanges.value) {
+      const result = await ElMessageBox.confirm(
+        '目前有未儲存的變更，是否要先儲存？',
+        '建立新工作流',
+        {
+          confirmButtonText: '儲存並建立新工作流',
+          cancelButtonText: '放棄變更並建立新工作流',
+          distinguishCancelAndClose: true,
+          type: 'warning'
+        }
+      )
+
+      if (result === 'confirm') {
+        await handleSaveWorkflow()
+      }
+    }
+
+    // 清空畫布
+    clearCanvas()
+
+    // 重設工作流狀態
+    workflowDatabase.resetState()
+
+    ElMessage.success('已建立新的工作流')
+  } catch (error) {
+    if (error !== 'cancel' && error !== 'close') {
+      console.error('建立新工作流失敗:', error)
+      ElMessage.error('建立新工作流失敗')
+    }
+  }
 }
 
-const handleOpenWorkflow = () => {
-  // TODO: 實作開啟工作流邏輯
-  ElMessage.info('開啟工作流功能開發中')
+const handleImportWorkflow = async () => {
+  try {
+    // 檢查是否有未儲存的變更
+    if (workflowManager.hasUnsavedChanges.value) {
+      await ElMessageBox.confirm(
+        '目前工作流有未儲存的變更，匯入新工作流將會遺失這些變更。確定要繼續嗎？',
+        '確認匯入',
+        {
+          confirmButtonText: '繼續匯入',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      )
+    }
+
+    // 匯入工作流
+    const workflowData = await workflowImportExport.importWorkflowFromFile()
+
+    if (workflowData) {
+      // 清空當前工作流
+      nodes.value = []
+      edges.value = []
+
+      // 載入匯入的工作流
+      nodes.value = workflowData.nodes
+      edges.value = workflowData.edges
+
+      if (workflowData.viewport) {
+        setViewport(workflowData.viewport)
+      }
+
+      // 清空選擇狀態
+      selectedNodeId.value = null
+      selectedEdgeId.value = null
+
+      // 清空歷史記錄並保存當前狀態
+      historyStack.value = []
+      currentHistoryIndex.value = -1
+      saveToHistory()
+
+      // 標記為有未儲存變更
+      workflowManager.hasUnsavedChanges.value = true
+    }
+
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('匯入工作流失敗:', error)
+      ElMessage.error('匯入工作流失敗')
+    }
+  }
 }
 
-const handleSaveWorkflow = () => {
-  // TODO: 實作儲存工作流邏輯
-  ElMessage.success('工作流已儲存')
+const handleOpenWorkflow = async () => {
+  try {
+    // 載入用戶的工作流列表
+    const userWorkflows = await workflowDatabase.loadUserWorkflows()
+
+    if (userWorkflows.length === 0) {
+      ElMessage.info('沒有已儲存的工作流')
+      return
+    }
+
+    // 建立選項列表
+    const optionsList = userWorkflows.map((workflow: any, index: number) =>
+      `${index + 1}. ${workflow.name} (${new Date(workflow.updated_at).toLocaleString()})`
+    ).join('\n')
+
+    // 顯示選擇對話框
+    const { value: selectedIndex } = await ElMessageBox.prompt(
+      `請輸入要開啟的工作流編號 (1-${userWorkflows.length}):\n\n${optionsList}`,
+      '開啟工作流',
+      {
+        confirmButtonText: '開啟',
+        cancelButtonText: '取消',
+        inputValidator: (value) => {
+          const num = parseInt(value)
+          if (isNaN(num) || num < 1 || num > userWorkflows.length) {
+            return `請輸入 1 到 ${userWorkflows.length} 之間的數字`
+          }
+          return true
+        }
+      }
+    )
+
+    const selectedWorkflow = userWorkflows[parseInt(selectedIndex) - 1]
+
+    if (!selectedWorkflow) return
+
+    // 檢查是否有未儲存的變更
+    if (workflowDatabase.hasUnsavedChanges.value) {
+      await ElMessageBox.confirm(
+        '目前工作流有未儲存的變更，開啟新工作流將會遺失這些變更。確定要繼續嗎？',
+        '確認開啟',
+        {
+          confirmButtonText: '繼續開啟',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      )
+    }
+
+    // 載入工作流
+    const workflowData = await workflowDatabase.loadWorkflow(selectedWorkflow.id)
+
+    if (workflowData) {
+      // 設置載入標誌，暫時停用 watch 監聽器
+      isLoadingWorkflow.value = true
+
+      // 清空當前工作流
+      nodes.value = []
+      edges.value = []
+
+      // 載入新工作流，確保節點有正確的位置
+      nodes.value = (workflowData.nodes || []).map((node: any, index: number) => ({
+        ...node,
+        position: node.position && node.position.x !== undefined && node.position.y !== undefined
+          ? node.position
+          : { x: 200 + (index * 300), y: 200 + (index * 150) } // 如果沒有位置資料，設置分散的預設位置
+      }))
+      edges.value = (workflowData.edges || []).map((edge: any) => ({
+        ...edge,
+        ...defaultEdgeOptions, // 應用默認邊選項
+        animated: true, // 確保動畫效果
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          width: 20,
+          height: 20,
+          color: '#666'
+        }
+      }))
+
+      // 清空選擇狀態
+      selectedNodeId.value = null
+      selectedEdgeId.value = null
+
+      // 清空歷史記錄並保存當前狀態
+      historyStack.value = []
+      currentHistoryIndex.value = -1
+      saveToHistory()
+
+      // 恢復視窗狀態或適應視圖，並重置狀態
+      nextTick(() => {
+        // 如果有儲存的 viewport 狀態，恢復它
+        if (workflowData.settings?.viewport) {
+          console.log('handleOpenWorkflow 恢復 viewport:', workflowData.settings.viewport)
+
+          // 智能 viewport 恢復邏輯
+          const trySetViewport = (attempts = 0) => {
+            const maxAttempts = 10
+            const viewportElement = document.querySelector('.vue-flow__viewport') as HTMLElement
+
+            if (viewportElement && attempts < maxAttempts) {
+              try {
+                // 先嘗試使用儲存的 viewport
+                setViewport(workflowData.settings.viewport)
+                console.log('✅ handleOpenWorkflow 成功設置 viewport')
+
+                // 驗證節點是否在可視範圍內（更保守的檢查）
+                setTimeout(() => {
+                  const nodes = document.querySelectorAll('.vue-flow__node')
+                  let nodesInViewport = 0
+                  let nodesOverlapping = 0
+                  const nodePositions = []
+
+                  nodes.forEach(node => {
+                    const rect = node.getBoundingClientRect()
+                    // 擴大可視範圍檢查，避免過度使用 fitView
+                    const isInViewport = rect.top >= -100 && rect.left >= -100 &&
+                                       rect.bottom <= window.innerHeight + 100 &&
+                                       rect.right <= window.innerWidth + 100
+                    if (isInViewport) nodesInViewport++
+
+                    nodePositions.push({ x: rect.x, y: rect.y })
+                  })
+
+                  // 檢查節點重疊
+                  for (let i = 0; i < nodePositions.length; i++) {
+                    for (let j = i + 1; j < nodePositions.length; j++) {
+                      const pos1 = nodePositions[i]
+                      const pos2 = nodePositions[j]
+                      if (Math.abs(pos1.x - pos2.x) < 20 && Math.abs(pos1.y - pos2.y) < 20) {
+                        nodesOverlapping++
+                        break
+                      }
+                    }
+                  }
+
+                  console.log(`📊 可視節點數: ${nodesInViewport}/${nodes.length}, 重疊節點: ${nodesOverlapping}`)
+
+                  // 只有在節點完全不可見或嚴重重疊時才使用 fitView
+                  if (nodesInViewport === 0 && nodes.length > 0) {
+                    console.log('⚠️ 所有節點都不可見，使用 fitView')
+                    vueFlowFitView({ padding: 0.2 })
+                  } else if (nodesOverlapping >= nodes.length - 1 && nodes.length > 1) {
+                    console.log('⚠️ 節點嚴重重疊，使用 fitView')
+                    vueFlowFitView({ padding: 0.2 })
+                  } else {
+                    console.log('✅ 節點位置正常，保持當前 viewport')
+                  }
+                }, 200)
+              } catch (error) {
+                console.error('❌ handleOpenWorkflow 設置 viewport 失敗:', error)
+                setTimeout(() => trySetViewport(attempts + 1), 200)
+              }
+            } else if (attempts >= maxAttempts) {
+              console.log('⚠️ handleOpenWorkflow 達到最大嘗試次數，使用 fitView')
+              vueFlowFitView({ padding: 0.2 })
+            } else {
+              setTimeout(() => trySetViewport(attempts + 1), 200)
+            }
+          }
+
+          setTimeout(() => {
+            trySetViewport()
+            // 載入完成，重新啟用 watch 監聽器
+            setTimeout(() => {
+              isLoadingWorkflow.value = false
+            }, 300)
+          }, 300)
+        } else {
+          // 否則適應視圖
+          vueFlowFitView({ padding: 0.2 })
+          // 載入完成，重新啟用 watch 監聽器
+          isLoadingWorkflow.value = false
+        }
+        // 重置未儲存狀態，因為剛載入的工作流應該是已儲存狀態
+        workflowDatabase.hasUnsavedChanges.value = false
+      })
+
+      ElMessage.success(`已載入工作流：${workflowData.name}`)
+    }
+
+  } catch (error) {
+    if (error !== 'cancel') {
+      console.error('開啟工作流失敗:', error)
+      ElMessage.error('開啟工作流失敗')
+    }
+  }
+}
+
+const handleSaveWorkflow = async () => {
+  try {
+    console.log('🚀 開始儲存工作流...')
+    console.log(`當前工作流ID: ${workflowDatabase.currentWorkflowId.value}`)
+    console.log(`是否為新工作流: ${workflowDatabase.isNewWorkflow.value}`)
+    console.log(`節點數量: ${nodes.value.length}`)
+    console.log(`連線數量: ${edges.value.length}`)
+
+    saveStatus.value = 'saving'
+
+    // 如果是新工作流，需要先建立
+    if (workflowDatabase.isNewWorkflow.value) {
+      // 提示輸入工作流名稱
+      const { value: workflowName } = await ElMessageBox.prompt(
+        '請輸入工作流名稱',
+        '建立工作流',
+        {
+          confirmButtonText: '建立',
+          cancelButtonText: '取消',
+          inputPattern: /\S+/,
+          inputErrorMessage: '工作流名稱不能為空'
+        }
+      )
+
+      // 建立新工作流
+      await workflowDatabase.createWorkflow(
+        workflowName,
+        '新建立的工作流',
+        nodes.value,
+        edges.value,
+        getViewport()
+      )
+    } else {
+      // 儲存現有工作流
+      await workflowDatabase.saveWorkflow(
+        workflowDatabase.currentWorkflowId.value!,
+        nodes.value,
+        edges.value,
+        workflowDatabase.currentWorkflowName.value,
+        workflowDatabase.currentWorkflow.value?.description,
+        getViewport()
+      )
+    }
+
+    // 這部分代碼已經在上面處理了，移除重複
+
+    saveStatus.value = 'saved'
+
+    // 3秒後重置狀態
+    setTimeout(() => {
+      saveStatus.value = 'saved'
+    }, 3000)
+
+    // 儲存成功後可以選擇性地進行驗證檢查
+    try {
+      const validationResult = await workflowValidation.validateWorkflow(nodes.value, edges.value)
+      if (validationResult.warnings.length > 0) {
+        ElMessage.warning(`工作流已儲存，但包含 ${validationResult.warnings.length} 個警告`)
+      }
+    } catch (validationError) {
+      console.log('驗證檢查失敗，但儲存已完成:', validationError)
+    }
+
+  } catch (error) {
+    saveStatus.value = 'error'
+    if (error !== 'cancel') {
+      console.error('儲存工作流失敗:', error)
+    }
+  }
 }
 
 const handleUndo = () => {
@@ -1317,6 +1891,24 @@ const zoomIn = () => {
 
 const zoomOut = () => {
   vueFlowZoomOut()
+}
+
+// ===== 驗證相關函數 =====
+
+const validateCurrentWorkflow = async () => {
+  try {
+    const result = await workflowValidation.validateWorkflow(nodes.value, edges.value)
+
+    if (result.isValid) {
+      ElMessage.success('工作流驗證通過！')
+    } else {
+      const errorMsg = `發現 ${result.criticalErrors.length} 個錯誤和 ${result.warnings.length} 個警告`
+      ElMessage.warning(errorMsg)
+    }
+  } catch (error) {
+    console.error('驗證工作流失敗:', error)
+    ElMessage.error('驗證工作流失敗')
+  }
 }
 
 const saveToHistory = () => {
@@ -1451,14 +2043,269 @@ const handleKeyDown = (event: KeyboardEvent) => {
   } else if (ctrlKey && event.key === 'v') {
     event.preventDefault()
     pasteNodes()
+  } else if (ctrlKey && event.key === 's') {
+    event.preventDefault()
+    console.log('Ctrl+S 觸發儲存')
+    handleSaveWorkflow()
   }
 }
 
+// 離開確認狀態
+const isLeavingConfirmed = ref(false)
+
+// 顯示離開確認對話框
+const showLeaveConfirmDialog = async (): Promise<'save' | 'leave' | 'cancel'> => {
+  try {
+    await ElMessageBox.confirm(
+      '您有未儲存的變更，要儲存變更後離開，還是直接離開？',
+      '離開確認',
+      {
+        confirmButtonText: '儲存並離開',
+        cancelButtonText: '直接離開',
+        distinguishCancelAndClose: true,
+        type: 'warning',
+        customClass: 'leave-confirm-dialog'
+      }
+    )
+    // 用戶點擊了 "儲存並離開"
+    return 'save'
+  } catch (action) {
+    if (action === 'cancel') {
+      // 用戶點擊了 "直接離開"
+      return 'leave'
+    } else {
+      // 用戶點擊了關閉按鈕或按 ESC
+      return 'cancel'
+    }
+  }
+}
+
+
+
 // 組件掛載時添加鍵盤監聽
-onMounted(() => {
+onMounted(async () => {
   document.addEventListener('keydown', handleKeyDown)
+
+  // 檢查是否需要載入指定的工作流
+  const workflowId = route.query.workflowId as string
+  if (workflowId) {
+    try {
+      const workflow = await workflowDatabase.loadWorkflow(workflowId)
+      if (workflow) {
+        // 設置載入標誌，暫時停用 watch 監聽器
+        isLoadingWorkflow.value = true
+
+        // 確保節點資料格式正確，並設置合理的預設位置
+        const loadedNodes: Node[] = (workflow.nodes || []).map((node: any, index: number) => ({
+          id: node.id,
+          type: node.type || 'default',
+          position: node.position && node.position.x !== undefined && node.position.y !== undefined
+            ? node.position
+            : { x: 200 + (index * 300), y: 200 + (index * 150) }, // 如果沒有位置資料，設置分散的預設位置
+          data: node.data || {}
+        }))
+
+        // 確保連線資料格式正確，並應用默認樣式
+        const loadedEdges: Edge[] = (workflow.edges || []).map((edge: any) => ({
+          id: edge.id,
+          source: edge.source,
+          target: edge.target,
+          sourceHandle: edge.sourceHandle,
+          targetHandle: edge.targetHandle,
+          ...defaultEdgeOptions, // 應用默認邊選項
+          animated: true, // 確保動畫效果
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            width: 20,
+            height: 20,
+            color: '#666'
+          }
+        }))
+
+        // 使用 nextTick 確保 Vue Flow 已經初始化
+        await nextTick()
+
+        // 載入工作流資料
+        nodes.value = loadedNodes
+        edges.value = loadedEdges
+
+        // 重要：設置當前工作流，這樣儲存時就不會被認為是新工作流
+        workflowDatabase.currentWorkflow.value = workflow
+
+        // 再次使用 nextTick 確保資料已經設置
+        await nextTick()
+
+        // 恢復視窗狀態或適應視圖
+        setTimeout(() => {
+          // 如果有儲存的 viewport 狀態，恢復它
+          if (workflow.settings?.viewport) {
+            console.log('恢復 viewport:', workflow.settings.viewport)
+
+            // 智能 viewport 恢復邏輯（URL 載入）
+            const trySetViewport = (attempts = 0) => {
+              const maxAttempts = 10
+              const viewportElement = document.querySelector('.vue-flow__viewport') as HTMLElement
+
+              if (viewportElement && attempts < maxAttempts) {
+                try {
+                  setViewport(workflow.settings.viewport)
+                  console.log('✅ URL載入 成功設置 viewport')
+
+                  // 驗證節點是否在可視範圍內（更保守的檢查）
+                  setTimeout(() => {
+                    const nodes = document.querySelectorAll('.vue-flow__node')
+                    let nodesInViewport = 0
+                    let nodesOverlapping = 0
+                    const nodePositions: Array<{x: number, y: number}> = []
+
+                    nodes.forEach(node => {
+                      const rect = node.getBoundingClientRect()
+                      // 擴大可視範圍檢查，避免過度使用 fitView
+                      const isInViewport = rect.top >= -100 && rect.left >= -100 &&
+                                         rect.bottom <= window.innerHeight + 100 &&
+                                         rect.right <= window.innerWidth + 100
+                      if (isInViewport) nodesInViewport++
+
+                      nodePositions.push({ x: rect.x, y: rect.y })
+                    })
+
+                    // 檢查節點重疊
+                    for (let i = 0; i < nodePositions.length; i++) {
+                      for (let j = i + 1; j < nodePositions.length; j++) {
+                        const pos1 = nodePositions[i]
+                        const pos2 = nodePositions[j]
+                        if (Math.abs(pos1.x - pos2.x) < 20 && Math.abs(pos1.y - pos2.y) < 20) {
+                          nodesOverlapping++
+                          break
+                        }
+                      }
+                    }
+
+                    console.log(`📊 URL載入 可視節點數: ${nodesInViewport}/${nodes.length}, 重疊節點: ${nodesOverlapping}`)
+
+                    // 只有在節點完全不可見或嚴重重疊時才使用 fitView
+                    if (nodesInViewport === 0 && nodes.length > 0) {
+                      console.log('⚠️ URL載入 所有節點都不可見，使用 fitView')
+                      vueFlowFitView({ padding: 0.2 })
+                    } else if (nodesOverlapping >= nodes.length - 1 && nodes.length > 1) {
+                      console.log('⚠️ URL載入 節點嚴重重疊，使用 fitView')
+                      vueFlowFitView({ padding: 0.2 })
+                    } else {
+                      console.log('✅ URL載入 節點位置正常，保持當前 viewport')
+                    }
+                  }, 200)
+                } catch (error) {
+                  console.error('❌ URL載入 設置 viewport 失敗:', error)
+                  setTimeout(() => trySetViewport(attempts + 1), 200)
+                }
+              } else if (attempts >= maxAttempts) {
+                console.log('⚠️ URL載入 達到最大嘗試次數，使用 fitView')
+                vueFlowFitView({ padding: 0.2 })
+              } else {
+                setTimeout(() => trySetViewport(attempts + 1), 200)
+              }
+            }
+
+            trySetViewport()
+          } else {
+            // 否則適應視圖
+            console.log('使用 fitView')
+            vueFlowFitView({ padding: 0.2 })
+          }
+
+          // 載入完成，重新啟用 watch 監聽器並重置狀態
+          setTimeout(() => {
+            workflowDatabase.hasUnsavedChanges.value = false
+            isLoadingWorkflow.value = false
+          }, 300)
+        }, 300)
+
+        ElMessage.success(`已載入工作流：${workflow.name}`)
+      }
+    } catch (error: any) {
+      console.error('載入工作流失敗:', error)
+      ElMessage.error(error.message || '載入工作流失敗')
+    }
+  }
+
   // 初始化歷史記錄
   saveToHistory()
+
+  // 檢查是否有自動儲存可以恢復（只在沒有載入指定工作流時檢查）
+  if (!workflowId && workflowManager.canAutoRestore.value) {
+    ElMessageBox.confirm(
+      '檢測到有未完成的工作流，是否要恢復？',
+      '恢復工作流',
+      {
+        confirmButtonText: '恢復',
+        cancelButtonText: '忽略',
+        type: 'info'
+      }
+    ).then(() => {
+      const autoSaveData = workflowManager.restoreAutoSave()
+      if (autoSaveData) {
+        nodes.value = autoSaveData.nodes
+        edges.value = autoSaveData.edges
+        if (autoSaveData.viewport) {
+          setViewport(autoSaveData.viewport)
+        }
+        workflowManager.hasUnsavedChanges.value = true
+        ElMessage.success('已恢復自動儲存的工作流')
+      }
+    }).catch(() => {
+      workflowManager.clearAutoSave()
+    })
+  }
+
+  // 設置自動儲存定時器
+  const autoSaveInterval = setInterval(() => {
+    if (nodes.value.length > 0 || edges.value.length > 0) {
+      workflowManager.autoSaveWorkflow(nodes.value, edges.value, getViewport())
+    }
+  }, 30000) // 每30秒自動儲存一次
+
+  // 在組件卸載時清除定時器
+  onUnmounted(() => {
+    clearInterval(autoSaveInterval)
+  })
+})
+
+// 路由離開守衛
+onBeforeRouteLeave(async (to, from, next) => {
+  console.log('onBeforeRouteLeave triggered, hasUnsavedChanges:', workflowDatabase.hasUnsavedChanges.value)
+
+  // 如果沒有未儲存的變更，直接通過
+  if (!workflowDatabase.hasUnsavedChanges.value) {
+    next(true)
+    return
+  }
+
+  // 如果已經確認離開，直接通過
+  if (isLeavingConfirmed.value) {
+    isLeavingConfirmed.value = false // 重置狀態
+    next(true)
+    return
+  }
+
+  // 顯示離開確認對話框
+  const action = await showLeaveConfirmDialog()
+
+  if (action === 'save') {
+    try {
+      await handleSaveWorkflow()
+      isLeavingConfirmed.value = true
+      next(true)
+    } catch (error) {
+      ElMessage.error('儲存失敗，無法離開')
+      next(false)
+    }
+  } else if (action === 'leave') {
+    isLeavingConfirmed.value = true
+    next(true)
+  } else {
+    // 用戶取消，不離開
+    next(false)
+  }
 })
 
 // 組件卸載時移除鍵盤監聽
@@ -1490,6 +2337,86 @@ const autoLayout = () => {
   })
 
   ElMessage.success('節點已自動排版')
+}
+
+// 執行工作流
+const handleExecuteWorkflow = async () => {
+  console.log('🚀 handleExecuteWorkflow 被調用')
+  console.log('當前工作流ID:', workflowDatabase.currentWorkflowId.value)
+  console.log('節點數量:', nodes.value.length)
+
+  try {
+    // 檢查是否有工作流可執行
+    if (!workflowDatabase.currentWorkflowId.value) {
+      console.log('❌ 沒有當前工作流ID')
+      ElMessage.warning('請先載入或建立一個工作流')
+      return
+    }
+
+    console.log('✅ 工作流ID檢查通過')
+
+    // 檢查工作流是否有節點
+    if (nodes.value.length === 0) {
+      console.log('❌ 工作流中沒有節點')
+      ElMessage.warning('工作流中沒有節點，無法執行')
+      return
+    }
+
+    console.log('✅ 節點數量檢查通過:', nodes.value.length)
+
+    // 檢查是否有觸發節點（更寬鬆的檢查）
+    console.log('🔍 檢查節點類型:', nodes.value.map(n => ({ id: n.id, type: n.type, data: n.data })))
+
+    const triggerNodes = nodes.value.filter(node => {
+      // 檢查節點類型或節點資料中的 nodeType
+      const nodeType = node.type || node.data?.nodeType
+      const nodeLabel = node.data?.label || ''
+
+      // 更寬鬆的觸發節點檢查
+      const isTriggerNode = nodeType && (
+        ['manualTrigger', 'webhookTrigger', 'scheduleTrigger'].includes(nodeType) ||
+        nodeType.includes('trigger') ||
+        nodeType.includes('Trigger')
+      ) || nodeLabel.includes('觸發') || nodeLabel.includes('手動')
+
+      console.log(`節點 ${node.id}: type=${node.type}, nodeType=${node.data?.nodeType}, label=${nodeLabel}, isTrigger=${isTriggerNode}`)
+
+      return isTriggerNode
+    })
+
+    if (triggerNodes.length === 0) {
+      console.log('❌ 沒有找到觸發節點')
+      ElMessage.warning('工作流必須包含至少一個觸發節點')
+      return
+    }
+
+    console.log('✅ 觸發節點檢查通過:', triggerNodes.length)
+
+    // 如果有未儲存的變更，先儲存
+    if (workflowDatabase.hasUnsavedChanges.value) {
+      ElMessage.info('檢測到未儲存的變更，正在自動儲存...')
+      await handleSaveWorkflow()
+    }
+
+    // 執行工作流
+    ElMessage.info('正在執行工作流...')
+    const result = await workflowDatabase.executeWorkflow()
+
+    console.log('🎉 工作流執行結果:', result)
+
+    // 顯示執行結果
+    if (result.status === 'SUCCESS') {
+      ElMessage.success(`工作流執行成功！執行ID: ${result.id}`)
+    } else if (result.status === 'RUNNING') {
+      ElMessage.info(`工作流正在執行中，執行ID: ${result.id}`)
+    } else {
+      ElMessage.warning(`工作流執行狀態: ${result.status}`)
+    }
+
+  } catch (error: any) {
+    console.error('❌ 執行工作流失敗:', error)
+    ElMessage.error(error.message || '執行工作流失敗')
+  }
 }
 
 const runTests = async () => {
@@ -1568,8 +2495,15 @@ const emitChanges = () => {
 
 // 監聽節點和連線變化
 watch([nodes, edges], () => {
+  // 如果正在載入工作流，不觸發變更標記
+  if (isLoadingWorkflow.value) {
+    return
+  }
+
   nextTick(() => {
     emitChanges()
+    // 標記為有未儲存的變更
+    workflowDatabase.markAsChanged()
   })
 }, { deep: true, immediate: true })
 
@@ -2217,6 +3151,118 @@ watch([nodes, edges], () => {
   &:active {
     background-color: darken($info-color, 15%) !important;
     border-color: darken($info-color, 15%) !important;
+  }
+}
+
+// ===== 驗證結果樣式 =====
+
+.panel-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+
+  h3 {
+    margin: 0;
+  }
+
+  .panel-actions {
+    .el-button {
+      font-size: 12px;
+    }
+  }
+}
+
+.validation-results {
+  margin-bottom: 20px;
+  border: 1px solid $border-color;
+  border-radius: 6px;
+  overflow: hidden;
+
+  .validation-header {
+    background: $bg-color-secondary;
+    padding: 8px 12px;
+    border-bottom: 1px solid $border-color;
+
+    h4 {
+      margin: 0;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: $warning-color;
+    }
+  }
+
+  .validation-errors {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .validation-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 8px 12px;
+    border-bottom: 1px solid $border-color-light;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &.validation-error {
+      background: rgba($error-color, 0.05);
+
+      .validation-icon {
+        color: $error-color;
+      }
+    }
+
+    &.validation-warning {
+      background: rgba($warning-color, 0.05);
+
+      .validation-icon {
+        color: $warning-color;
+      }
+    }
+
+    .validation-icon {
+      margin-top: 2px;
+      font-size: 14px;
+    }
+
+    .validation-content {
+      flex: 1;
+
+      .validation-message {
+        font-size: 13px;
+        line-height: 1.4;
+        margin-bottom: 2px;
+      }
+
+      .validation-location {
+        font-size: 11px;
+        color: $text-color-secondary;
+      }
+    }
+  }
+
+  .validation-summary {
+    padding: 8px 12px;
+    background: $bg-color-secondary;
+    font-size: 12px;
+    display: flex;
+    gap: 12px;
+
+    .error-count {
+      color: $error-color;
+      font-weight: 500;
+    }
+
+    .warning-count {
+      color: $warning-color;
+      font-weight: 500;
+    }
   }
 }
 

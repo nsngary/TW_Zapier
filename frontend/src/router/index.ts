@@ -6,15 +6,12 @@ export const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'home',
-    component: () => import('@/views/HomeView.vue'),
-    meta: {
-      title: '首頁'
-    }
+    redirect: '/dashboard'
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import('@/views/auth/LoginView.vue'),
+    component: () => import('@/views/LoginPage.vue'),
     meta: {
       title: '登入',
       requiresAuth: false,
@@ -24,11 +21,20 @@ export const routes: RouteRecordRaw[] = [
   {
     path: '/register',
     name: 'register',
-    component: () => import('@/views/auth/RegisterView.vue'),
+    component: () => import('@/views/RegisterPage.vue'),
     meta: {
       title: '註冊',
       requiresAuth: false,
       hideForAuth: true
+    }
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: () => import('@/views/DashboardPage.vue'),
+    meta: {
+      title: '儀表板',
+      requiresAuth: true
     }
   },
   // 暫時註解掉不存在的工作流路由
@@ -47,7 +53,8 @@ export const routes: RouteRecordRaw[] = [
     name: 'workflow-editor',
     component: () => import('@/views/WorkflowTest.vue'),
     meta: {
-      title: 'TW_Zapier 工作流編輯器'
+      title: 'TW_Zapier 工作流編輯器',
+      requiresAuth: true
     }
   },
 
@@ -136,10 +143,10 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 
-  // 如果已登入且訪問登入/註冊頁面，重導向到首頁
+  // 如果已登入且訪問登入/註冊頁面，重導向到儀表板
   if (to.meta?.hideForAuth) {
     if (authStore.isAuthenticated) {
-      next({ name: 'home' })
+      next({ name: 'dashboard' })
       return
     }
   }

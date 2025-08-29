@@ -77,10 +77,10 @@ class UserService:
             hashed_password = get_password_hash(user_create.password)
             db_user = User(
                 email=user_create.email,
-                full_name=user_create.full_name,
-                hashed_password=hashed_password,
-                is_active=user_create.is_active,
-                is_superuser=user_create.is_superuser
+                name=user_create.name,
+                password_hash=hashed_password,
+                is_active=getattr(user_create, 'is_active', True),
+                is_superuser=getattr(user_create, 'is_superuser', False)
             )
             
             self.db.add(db_user)
@@ -196,20 +196,28 @@ class UserService:
             logger.error(f"停用使用者失敗: {str(e)}")
             raise
     
-    async def authenticate_user(self, email: str, password: str) -> Optional[User]:
+    async def authenticate_user(self, email_or_username: str, password: str) -> Optional[User]:
         """
-        驗證使用者憑證
+        驗證使用者憑證 - 支援 email 或 username 登入
         """
         try:
-            user = await self.get_user_by_email(email)
+            # 先嘗試用 email 查找
+            user = await self.get_user_by_email(email_or_username)
+
+            # 如果找不到，嘗試用 username 查找（假設 username 對應 email 的前綴）
+            if not user and not '@' in email_or_username:
+                # 將 username 轉換為對應的 email 格式
+                test_email = f"{email_or_username}@taiwan-zapier.com"
+                user = await self.get_user_by_email(test_email)
+
             if not user:
                 return None
-            
-            if not verify_password(password, user.hashed_password):
+
+            if not verify_password(password, user.password_hash):
                 return None
-            
+
             return user
-            
+
         except Exception as e:
             logger.error(f"使用者認證失敗: {str(e)}")
             return None
@@ -224,11 +232,11 @@ class UserService:
                 raise ResourceNotFoundError("使用者", str(user_id))
             
             # 驗證目前密碼
-            if not verify_password(current_password, db_user.hashed_password):
+            if not verify_password(current_password, db_user.password_hash):
                 raise ValidationError("目前密碼錯誤")
-            
+
             # 更新密碼
-            db_user.hashed_password = get_password_hash(new_password)
+            db_user.password_hash = get_password_hash(new_password)
             self.db.commit()
             
             logger.info(f"使用者密碼變更成功: user_id={user_id}")

@@ -371,3 +371,61 @@ export interface SearchParams {
   page?: number
   pageSize?: number
 }
+
+// ===== 工作流基本操作相關類型 =====
+
+// 簡化的工作流資料介面（用於編輯器）
+export interface SimpleWorkflowData {
+  nodes: Node[]
+  edges: any[]
+  viewport?: {
+    x: number
+    y: number
+    zoom: number
+  }
+}
+
+// 工作流儲存資料介面
+export interface WorkflowSaveData extends SimpleWorkflowData {
+  id: string
+  name: string
+  description: string
+  createdAt: string
+  updatedAt: string
+  version: string
+}
+
+// 工作流匯出資料介面（重新定義以避免衝突）
+export interface WorkflowExportFormat {
+  metadata: {
+    name: string
+    description: string
+    version: string
+    exportedAt: string
+    platform: string
+    nodeCount: number
+    edgeCount: number
+  }
+  workflow: SimpleWorkflowData
+}
+
+// 驗證錯誤介面
+export interface ValidationError {
+  id: string
+  type: 'structure' | 'node' | 'node-config' | 'connection' | 'logic' | 'taiwan-specific' | 'system'
+  severity: 'error' | 'warning'
+  message: string
+  nodeId?: string
+  edgeId?: string
+}
+
+// 工作流驗證結果介面（重新定義以避免衝突）
+export interface DetailedWorkflowValidationResult {
+  isValid: boolean
+  errors: ValidationError[]
+  warnings: ValidationError[]
+  criticalErrors: ValidationError[]
+  nodeCount: number
+  edgeCount: number
+  validatedAt: string
+}

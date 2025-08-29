@@ -47,7 +47,7 @@ async def login(
         
         # 驗證使用者憑證
         user = await user_service.authenticate_user(
-            login_data.email, 
+            login_data.username,
             login_data.password
         )
         
@@ -64,12 +64,24 @@ async def login(
         
         logger.info(f"使用者登入成功: {user.email}")
         
+        # 手動構建用戶響應以處理日期轉換
+        user_data = {
+            "id": str(user.id),
+            "name": user.name,
+            "email": user.email,
+            "phone": user.phone,
+            "avatar": user.avatar,
+            "email_verified": user.email_verified,
+            "created_at": user.created_at.isoformat(),
+            "updated_at": user.updated_at.isoformat()
+        }
+
         return LoginResponse(
             access_token=access_token,
             refresh_token=refresh_token,
             token_type="bearer",
             expires_in=3600,  # 1 小時
-            user=UserResponse.from_orm(user)
+            user=user_data
         )
         
     except AuthenticationError:

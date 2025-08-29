@@ -18,6 +18,7 @@ from app.core.exceptions import (
 from app.schemas.workflow import (
     WorkflowCreate,
     WorkflowUpdate,
+    WorkflowSave,
     WorkflowResponse,
     WorkflowExecutionCreate,
     WorkflowExecutionResponse,
@@ -216,6 +217,54 @@ async def update_workflow(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="更新工作流失敗"
+        )
+
+
+@router.post("/{workflow_id}/save", response_model=WorkflowResponse)
+async def save_workflow(
+    workflow_id: str,
+    workflow_data: WorkflowSave,
+    current_user: User = Depends(get_current_user_from_token),
+    db: Session = Depends(get_db)
+):
+    """
+    儲存工作流（專門用於編輯器儲存）
+    """
+    try:
+        # 驗證UUID格式
+        try:
+            uuid.UUID(workflow_id)
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="無效的工作流ID格式"
+            )
+
+        workflow_service = WorkflowService(db)
+        workflow = await workflow_service.save_workflow(
+            workflow_id=workflow_id,
+            user_id=str(current_user.id),
+            workflow_data=workflow_data
+        )
+
+        logger.info(f"工作流儲存成功: workflow_id={workflow_id}, user_id={current_user.id}")
+        return WorkflowResponse.from_orm(workflow)
+
+    except ResourceNotFoundError:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="工作流不存在"
+        )
+    except AuthorizationError:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="沒有權限儲存此工作流"
+        )
+    except Exception as e:
+        logger.error(f"儲存工作流失敗: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="儲存工作流失敗"
         )
 
 

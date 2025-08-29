@@ -55,6 +55,16 @@ class WorkflowUpdate(BaseModel):
     is_active: Optional[bool] = Field(None, description="是否啟用")
 
 
+class WorkflowSave(BaseModel):
+    """儲存工作流模型"""
+    name: Optional[str] = Field(None, min_length=1, max_length=200, description="工作流名稱")
+    description: Optional[str] = Field(None, description="工作流描述")
+    nodes: List[Dict[str, Any]] = Field(..., description="節點列表")
+    edges: List[Dict[str, Any]] = Field(..., description="連線列表")
+    settings: Optional[Dict[str, Any]] = Field(default={}, description="設定")
+    viewport: Optional[Dict[str, Any]] = Field(None, description="視窗狀態")
+
+
 class WorkflowResponse(WorkflowBase):
     """工作流回應模型 - 使用UUID格式符合前端需求"""
     id: str = Field(..., description="工作流 ID (UUID字串格式)")

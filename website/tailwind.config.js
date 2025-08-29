@@ -53,6 +53,30 @@ module.exports = {
           700: '#44403c',
           800: '#292524',
           900: '#1c1917',
+        },
+        // HeaderNavigation 特定顏色
+        header: {
+          bg: '#fbfaf8',
+          border: '#ece9df',
+          text: {
+            primary: '#201515',
+            secondary: '#413735',
+            muted: '#574e4c',
+            disabled: '#6f6765',
+          },
+          link: {
+            hover: '#503ebd',
+            focus: '#695be8',
+          },
+          button: {
+            bg: '#ece9df',
+            hover: '#f5f3eb',
+          },
+          dropdown: {
+            bg: '#fffdf9',
+            overlay: '#2015151a',
+            indicator: '#b09a85',
+          }
         }
       },
       // 字體配置
@@ -165,12 +189,23 @@ module.exports = {
           '50%': { backgroundPosition: '50% 100%' },
         },
       },
-      // 斷點配置
+      // 動畫持續時間 - 添加 HeaderNavigation 需要的持續時間
+      transitionDuration: {
+        '250': '250ms', // HeaderNavigation 使用
+      },
+
+      // Outline offset - 添加 HeaderNavigation 需要的 outline offset
+      outlineOffset: {
+        '0.5': '0.125rem', // 2px，HeaderNavigation 使用
+      },
+
+      // 斷點配置 - 添加 HeaderNavigation 特定斷點
       screens: {
         'xs': '475px',
         'sm': '640px',
         'md': '768px',
         'lg': '1024px',
+        'desktop': '1071px', // HeaderNavigation 桌面版斷點
         'xl': '1280px',
         '2xl': '1536px',
       },
