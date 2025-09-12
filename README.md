@@ -161,27 +161,3 @@ docker-compose up -d
 
 詳細開發指南請參考 [docs/development/](docs/development/)
 
-## 📈 專案里程碑
-
-- [x] **第3週**: 技術可行性驗證完成
-- [ ] **第6週**: 基礎平台功能完成
-- [ ] **第9週**: 台灣在地服務節點完成
-- [ ] **第12週**: 生產就緒系統完成
-
-## 🤝 貢獻指南
-
-歡迎社群貢獻！請參考 [CONTRIBUTING.md](CONTRIBUTING.md) 了解如何參與專案開發。
-
-## 📄 授權條款
-
-本專案採用 MIT 授權條款 - 詳見 [LICENSE](LICENSE) 檔案
-
-## 📞 聯絡資訊
-
-- 專案維護者: [Your Name]
-- Email: [your.email@example.com]
-- 問題回報: [GitHub Issues](https://github.com/your-repo/issues)
-
----
-
-**讓台灣企業的數位轉型更簡單！** 🚀

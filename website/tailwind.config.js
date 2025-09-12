@@ -57,6 +57,7 @@ module.exports = {
         // HeaderNavigation 特定顏色
         header: {
           bg: '#fbfaf8',
+          // bg: '#3c331fff',
           border: '#ece9df',
           text: {
             primary: '#201515',

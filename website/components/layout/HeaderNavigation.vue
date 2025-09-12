@@ -43,12 +43,12 @@
                 <summary class="Dropdown-module_summary_Xbsnp-Dg" data-testid="nav-dropdown-summary">
                   <span>產品</span>
                   <span class="Dropdown-module_indicator_oQwHfinM">
-                    <svg width="16" height="16"
-                      viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" size="16"
-                      class="zapier-zinnia-icons__icon__8f1EW1A1" aria-hidden="false" role="img"
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                      size="16" class="zapier-zinnia-icons__icon__8f1EW1A1" aria-hidden="false" role="img"
                       data-name="arrowSmallDown" data-block="false" data-pointer-events="true" data-animate-fill="true"
                       style="--color:inherit">
-                      <path d="M12 17.2999L19 11.4399V8.81995L12 14.6999L5 8.81995V11.4399L12 17.2999Z" fill="currentColor"></path>
+                      <path d="M12 17.2999L19 11.4399V8.81995L12 14.6999L5 8.81995V11.4399L12 17.2999Z"
+                        fill="currentColor"></path>
                     </svg>
                   </span>
                 </summary>
@@ -156,7 +156,7 @@
                                 <div>
                                   <div class="SubmenuList-module_label_J8sNAfc3"><span>安全性</span></div>
                                   <div class="SubmenuList-module_description_v--G85zn">
-                                    企業級安全  
+                                    企業級安全
                                   </div>
                                 </div>
                               </a></li>
@@ -698,8 +698,10 @@
                     </div>
                   </div>
                   <!-- 產品右側 -->
-                  <aside class="Submenu-module_aside_1qzqnFiW"><a class="SubmenuArticle-module_root_qedFZ1Fu"
-                      href="/solutions/revops" aria-label="Automation for RevOps"><img
+                  <aside class="Submenu-module_aside_1qzqnFiW">
+                    <a class="SubmenuArticle-module_root_qedFZ1Fu"
+                      href="/solutions/revops" aria-label="Automation for RevOps">
+                      <img
                         class="SubmenuArticle-module_image_8e3JR3cL"
                         src="https://res.cloudinary.com/zapier-media/image/upload/f_auto/q_auto/v1716910976/Global_Nav_April_2024_aeaycw.png"
                         alt="Graphic that shows automation icons connected to a central hub" loading="lazy" width="96">
@@ -792,7 +794,7 @@
                                 href="/blog/what-are-webhooks/" aria-label="Webhooks and Zapier">
                                 <div>
                                   <div class="SubmenuList-module_label_J8sNAfc3"><span>
-                                    Webhooks 和 Zapier</span></div>
+                                      Webhooks 和 Zapier</span></div>
                                   <div class="SubmenuList-module_description_v--G85zn">
                                     使用 Webhook 連接您喜愛的應用程式
                                   </div>
@@ -1026,13 +1028,15 @@
       <div class="atoms-module_desktopOnly_-q1pODQd">
         <nav aria-label="Secondary site navigation">
           <ul class="Nav-module_list_bCnfFR-g">
-            <li><a class="Link-module_link_8hVWJnMA" href="http://localhost:3000/editor" aria-label="Explore apps" data-testid="nav-link"><span
-                  class="atoms-module_flex_3DCW-0eq">
-                  <svg width="18" height="18" viewBox="0 0 256 256" fill="none"
-                    xmlns="http://www.w3.org/2000/svg" size="18" class="zapier-zinnia-icons__icon__8f1EW1A1"
-                    aria-hidden="false" role="img" data-name="navApps" data-block="false" data-pointer-events="true"
-                    data-animate-fill="true" style="--color:inherit">
-                    <path d="M224.32,114.24a56,56,0,0,0-60.07-76.57A56,56,0,0,0,67.93,51.44a56,56,0,0,0-36.25,90.32A56,56,0,0,0,69,217,56.39,56.39,0,0,0,83.59,219a55.75,55.75,0,0,0,8.17-.61,56,56,0,0,0,96.31-13.78,56,56,0,0,0,36.25-90.32Zm-80.32,23-16,9.24-16-9.24V118.76l16-9.24,16,9.24Zm38.85-82.81a40,40,0,0,1,28.56,48c-.95-.63-1.91-1.24-2.91-1.81L164,74.88a8,8,0,0,0-8,0l-44,25.41V81.81l40.5-23.38A39.76,39.76,0,0,1,182.85,54.43Zm-142,32.5A39.75,39.75,0,0,1,64.12,68.57C64.05,69.71,64,70.85,64,72v51.38a8,8,0,0,0,4,6.93l44,25.4L96,165,55.5,141.57A40,40,0,0,1,40.86,86.93ZM136,224a39.79,39.79,0,0,1-27.52-10.95c1-.51,2-1.05,3-1.63L156,185.73a8,8,0,0,0,4-6.92V128l16,9.24V184A40,40,0,0,1,136,224Z" fill="currentColor"></path>
+            <li><a class="Link-module_link_8hVWJnMA" href="http://localhost:3000/editor" aria-label="Explore apps"
+                data-testid="nav-link"><span class="atoms-module_flex_3DCW-0eq">
+                  <svg width="18" height="18" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg"
+                    size="18" class="zapier-zinnia-icons__icon__8f1EW1A1" aria-hidden="false" role="img"
+                    data-name="navApps" data-block="false" data-pointer-events="true" data-animate-fill="true"
+                    style="--color:inherit">
+                    <path
+                      d="M224.32,114.24a56,56,0,0,0-60.07-76.57A56,56,0,0,0,67.93,51.44a56,56,0,0,0-36.25,90.32A56,56,0,0,0,69,217,56.39,56.39,0,0,0,83.59,219a55.75,55.75,0,0,0,8.17-.61,56,56,0,0,0,96.31-13.78,56,56,0,0,0,36.25-90.32Zm-80.32,23-16,9.24-16-9.24V118.76l16-9.24,16,9.24Zm38.85-82.81a40,40,0,0,1,28.56,48c-.95-.63-1.91-1.24-2.91-1.81L164,74.88a8,8,0,0,0-8,0l-44,25.41V81.81l40.5-23.38A39.76,39.76,0,0,1,182.85,54.43Zm-142,32.5A39.75,39.75,0,0,1,64.12,68.57C64.05,69.71,64,70.85,64,72v51.38a8,8,0,0,0,4,6.93l44,25.4L96,165,55.5,141.57A40,40,0,0,1,40.86,86.93ZM136,224a39.79,39.79,0,0,1-27.52-10.95c1-.51,2-1.05,3-1.63L156,185.73a8,8,0,0,0,4-6.92V128l16,9.24V184A40,40,0,0,1,136,224Z"
+                      fill="currentColor"></path>
                   </svg></span><span>工作區</span></a></li>
             <li><a class="Link-module_link_8hVWJnMA" href="/apps" aria-label="Explore apps" data-testid="nav-link"><span
                   class="atoms-module_flex_3DCW-0eq"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -1052,7 +1056,8 @@
       <div class="atoms-module_flex_3DCW-0eq atoms-module_alignCenter_4pCpghSp atoms-module_gap8_S9UNRtTd"
         data-testid="auth-links"><span class="atoms-module_desktopOnly_-q1pODQd"><a class="Link-module_link_8hVWJnMA"
             href="/app/login" aria-label="Log in" data-testid="nav-link"><span>登入</span></a></span><span
-          class="Header-module_button_ZK2h09qX"><a href="/sign-up" class="Button-module_root_RSLKls-N">註冊</a></span></div>
+          class="Header-module_button_ZK2h09qX"><a href="/sign-up" class="Button-module_root_RSLKls-N">註冊</a></span>
+      </div>
       <div class="atoms-module_mobileOnly_cgycZy-J">
         <details class="MobileNav-module_root_Ac6QAhea">
           <summary class="MobileNav-module_summary_IIqIcJuQ" aria-label="Menu" data-testid="mobile-nav-summary"><span
@@ -1116,14 +1121,14 @@
                             href="/canvas"><span>視覺化畫布</span><span class="Tag-module_root_cJ2O-lnU">Beta</span></a>
                         </li>
                         <li><a class="MobileNav-module_item_nR2PqfIk MobileNav-module_nested_9KhnraVf"
-                            href="/ai/chatbot"><span>聊天機器人</span><span
-                              class="Tag-module_root_cJ2O-lnU">Beta</span></a></li>
+                            href="/ai/chatbot"><span>聊天機器人</span><span class="Tag-module_root_cJ2O-lnU">Beta</span></a>
+                        </li>
                         <li><a class="MobileNav-module_item_nR2PqfIk MobileNav-module_nested_9KhnraVf"
                             href="/agents"><span>智能代理</span><span class="Tag-module_root_cJ2O-lnU">Beta</span></a>
                         </li>
                         <li><a class="MobileNav-module_item_nR2PqfIk MobileNav-module_nested_9KhnraVf"
-                            href="/functions"><span>自訂函數</span><span
-                              class="Tag-module_root_cJ2O-lnU">Beta</span></a></li>
+                            href="/functions"><span>自訂函數</span><span class="Tag-module_root_cJ2O-lnU">Beta</span></a>
+                        </li>
                         <li><a class="MobileNav-module_item_nR2PqfIk MobileNav-module_nested_9KhnraVf"
                             href="/mcp"><span>TW Zapier MCP</span><span class="Tag-module_root_cJ2O-lnU">Beta</span></a>
                         </li>
@@ -1253,12 +1258,14 @@
                       <div class="MobileNav-module_dropdownHeading_VPBVuJAV">學習使用 TW Zapier</div>
                       <ul class="MobileNav-module_dropdownList_44Kjlzdg">
                         <li><a class="MobileNav-module_item_nR2PqfIk MobileNav-module_nested_9KhnraVf"
-                            href="https://learn.zapier.com/path/zapier-basics-from-a-to-zap"><span>TW Zapier 基礎教學</span></a></li>
+                            href="https://learn.zapier.com/path/zapier-basics-from-a-to-zap"><span>TW Zapier
+                              基礎教學</span></a></li>
                         <li><a class="MobileNav-module_item_nR2PqfIk MobileNav-module_nested_9KhnraVf"
                             href="https://learn.zapier.com/product-walkthrough-of-zapier"><span>產品導覽</span></a>
                         </li>
                         <li><a class="MobileNav-module_item_nR2PqfIk MobileNav-module_nested_9KhnraVf"
-                            href="/resources/webinar/zapier-101-getting-started/recording"><span>TW Zapier 101</span></a>
+                            href="/resources/webinar/zapier-101-getting-started/recording"><span>TW Zapier
+                              101</span></a>
                         </li>
                         <li><a class="MobileNav-module_item_nR2PqfIk MobileNav-module_nested_9KhnraVf"
                             href="/resources/events"><span>活動與網路研討會</span></a></li>
@@ -2513,7 +2520,7 @@ button.Footer-module_legalLink_ihZscHLn {
 .Submenu-module_main_nVQBDcyi {
   width: 100%;
   min-width: 50vw;
-  
+
 }
 
 .Submenu-module_main_nVQBDcyi:only-child {
