@@ -114,7 +114,7 @@ async def register(
         user_create = UserCreate(
             email=register_data.email,
             password=register_data.password,
-            full_name=register_data.full_name
+            name=register_data.full_name
         )
         
         user = await user_service.create_user(user_create)
@@ -124,14 +124,22 @@ async def register(
         refresh_token = create_refresh_token(subject=user.id)
         
         logger.info(f"新使用者註冊成功: {user.email}")
-        
+
+        # 手動構建用戶響應以處理日期轉換
+        user_data = {
+            "id": str(user.id),
+            "name": user.name,
+            "email": user.email,
+            "phone": user.phone,
+            "avatar": user.avatar,
+            "email_verified": user.email_verified,
+            "created_at": user.created_at.isoformat(),
+            "updated_at": user.updated_at.isoformat()
+        }
+
         return RegisterResponse(
-            access_token=access_token,
-            refresh_token=refresh_token,
-            token_type="bearer",
-            expires_in=3600,
-            user=UserResponse.from_orm(user),
-            message="註冊成功"
+            message="註冊成功",
+            user_id=str(user.id)
         )
         
     except (ValidationError, AuthenticationError):

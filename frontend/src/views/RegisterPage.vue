@@ -136,6 +136,11 @@
             </label>
           </div>
 
+          <!-- 錯誤訊息顯示 -->
+          <div v-if="errors.general" class="error-message">
+            {{ errors.general }}
+          </div>
+
           <div class="form-actions">
             <BaseButton
               type="submit"
@@ -316,31 +321,53 @@ const validateField = (field: keyof typeof form) => {
 const handleSubmit = async () => {
   // 清除之前的錯誤
   errors.general = ''
-  
+
   // 驗證所有欄位
   Object.keys(form).forEach(field => {
     if (field !== 'agreeToTerms') {
       validateField(field as keyof typeof form)
     }
   })
-  
+
   if (!isFormValid.value) {
     return
   }
-  
+
   isLoading.value = true
-  
+
   try {
-    // 模擬 API 調用
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    // 模擬註冊成功
-    console.log('註冊資料:', form)
-    
-    // 導向登入頁面
-    router.push('/login?message=註冊成功，請登入您的帳戶')
+    // 準備註冊數據，轉換為後端期望的格式
+    const registerData = {
+      email: form.email,
+      password: form.password,
+      full_name: `${form.firstName} ${form.lastName}`.trim()
+    }
+
+    console.log('發送註冊請求:', registerData)
+
+    // 調用註冊 API
+    const response = await fetch('http://localhost:8000/api/v1/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(registerData)
+    })
+
+    const result = await response.json()
+
+    if (response.ok) {
+      console.log('註冊成功:', result)
+      // 導向登入頁面
+      router.push('/login?message=註冊成功，請登入您的帳戶')
+    } else {
+      // 處理錯誤回應
+      console.error('註冊失敗:', result)
+      errors.general = result.detail || result.message || '註冊失敗，請稍後再試'
+    }
   } catch (error) {
-    errors.general = '註冊失敗，請稍後再試'
+    console.error('註冊請求錯誤:', error)
+    errors.general = '網路錯誤，請檢查您的網路連線'
   } finally {
     isLoading.value = false
   }
@@ -521,6 +548,17 @@ const handleSubmit = async () => {
 .terms-link:hover {
   color: #7a6654;
   text-decoration: underline;
+}
+
+/* 錯誤訊息 */
+.error-message {
+  padding: 12px 16px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #dc2626;
+  font-size: 14px;
+  margin-bottom: 16px;
 }
 
 .form-actions {

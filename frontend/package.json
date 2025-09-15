@@ -4,7 +4,7 @@
   "description": "台灣在地化流程自動化平台 - 前端應用",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 3000",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "test": "vitest",

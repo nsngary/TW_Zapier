@@ -26,7 +26,7 @@ class RegisterRequest(BaseModel):
 class RegisterResponse(BaseModel):
     """註冊回應模型"""
     message: str = Field(..., description="回應訊息")
-    user_id: int = Field(..., description="使用者 ID")
+    user_id: str = Field(..., description="使用者 ID")
 
 
 class LoginResponse(BaseModel):
